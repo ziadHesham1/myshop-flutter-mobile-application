@@ -4,9 +4,9 @@ import 'package:myshop_flutter_application/screens/cart_screen.dart';
 import 'package:myshop_flutter_application/widgets/main_drawer.dart';
 import 'package:myshop_flutter_application/widgets/product_item.dart';
 
-class ProductsScreen extends StatelessWidget {
+class ProductsOverviewScreen extends StatelessWidget {
   // the data
-  const ProductsScreen({super.key});
+  const ProductsOverviewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

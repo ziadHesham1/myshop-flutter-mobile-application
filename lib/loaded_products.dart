@@ -1,7 +1,7 @@
 import 'models/product.dart';
 
-// ignore: constant_identifier_names
-const List<Product> LOADEDPRODUCTS = [
+// ignore: constant_identifier_names, non_constant_identifier_names
+List<Product> LOADEDPRODUCTS = [
   Product(
     id: 'p1',
     title: 'Red Shirt',
