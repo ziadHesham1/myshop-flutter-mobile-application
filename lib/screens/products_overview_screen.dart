@@ -10,7 +10,6 @@ class ProductsOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double bodyWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -29,15 +28,17 @@ class ProductsOverviewScreen extends StatelessWidget {
         ],
       ),
       drawer: const MainDrawer(),
-      body: GridView(
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: bodyWidth * 0.5,
+      body: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           childAspectRatio: 3 / 2,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          crossAxisCount: 2,
         ),
-        children:
-            LOADEDPRODUCTS.map((product) => ProductItem(product)).toList(),
+        itemCount: LOADEDPRODUCTS.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ProductItem(LOADEDPRODUCTS[index]);
+        },
       ),
     );
   }

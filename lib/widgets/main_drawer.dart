@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:myshop_flutter_application/screens/orders_screen.dart';
-import 'package:myshop_flutter_application/screens/products_overview_screen.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});

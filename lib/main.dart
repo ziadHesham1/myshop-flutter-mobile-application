@@ -12,7 +12,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Material App',
-      theme: ThemeData(primarySwatch: Colors.purple),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
+            .copyWith(secondary: Colors.deepOrange),
+
+        fontFamily: 'Lato'
+      ),
       routes: {
         '/': (context) => const ProductsOverviewScreen(),
         OrdersScreen.routeName: (context) => const OrdersScreen(),
