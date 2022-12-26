@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:myshop_flutter_application/loaded_products.dart';
-import 'package:myshop_flutter_application/screens/cart_screen.dart';
-import 'package:myshop_flutter_application/widgets/main_drawer.dart';
-import 'package:myshop_flutter_application/widgets/product_item.dart';
+import '../screens/cart_screen.dart';
+import '../screens/products_grid.dart';
+import '../widgets/main_drawer.dart';
 
 class ProductsOverviewScreen extends StatelessWidget {
   // the data
@@ -10,7 +9,6 @@ class ProductsOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('MyShop'),
@@ -28,18 +26,7 @@ class ProductsOverviewScreen extends StatelessWidget {
         ],
       ),
       drawer: const MainDrawer(),
-      body: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 3 / 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          crossAxisCount: 2,
-        ),
-        itemCount: LOADEDPRODUCTS.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ProductItem(LOADEDPRODUCTS[index]);
-        },
-      ),
+      body: const ProductGrid(),
     );
   }
 }
