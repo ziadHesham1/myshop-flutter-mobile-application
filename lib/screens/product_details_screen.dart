@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myshop_flutter_application/models/product.dart';
+import 'package:myshop_flutter_application/providers/product_model.dart';
 import 'package:myshop_flutter_application/widgets/product_item.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
@@ -9,8 +9,8 @@ class ProductDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Product selectedProduct =
-        ModalRoute.of(context)!.settings.arguments as Product;
+    ProductModel selectedProduct =
+        ModalRoute.of(context)!.settings.arguments as ProductModel;
 
     var imageUsingInternet = Image.network(
       selectedProduct.imageUrl,

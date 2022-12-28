@@ -1,0 +1,59 @@
+{
+	"files": [
+		{
+			"path": "lib/providers/products_provider.dart",
+			"bookmarks": [
+				{
+					"line": 4,
+					"column": 4,
+					"label": "ProductsProvider File"
+				}
+			]
+		},
+		{
+			"path": "lib/widgets/product_item.dart",
+			"bookmarks": [
+				{
+					"line": 16,
+					"column": 42,
+					"label": "ProductModel porvider Listen"
+				}
+			]
+		},
+		{
+			"path": "lib/providers/product_model.dart",
+			"bookmarks": [
+				{
+					"line": 2,
+					"column": 6,
+					"label": "ProductModel File"
+				}
+			]
+		},
+		{
+			"path": "lib/screens/products_grid.dart",
+			"bookmarks": [
+				{
+					"line": 14,
+					"column": 4,
+					"label": "products provider Listen"
+				},
+				{
+					"line": 24,
+					"column": 6,
+					"label": "ProductaModel porvider Call"
+				}
+			]
+		},
+		{
+			"path": "lib/main.dart",
+			"bookmarks": [
+				{
+					"line": 14,
+					"column": 4,
+					"label": "ProductsProvider Call"
+				}
+			]
+		}
+	]
+}

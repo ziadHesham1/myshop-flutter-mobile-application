@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:myshop_flutter_application/models/product.dart';
+import 'package:myshop_flutter_application/providers/product_model.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/product_details_screen.dart';
 
-   bool isInternetConnected = false;
+// عشان النت لما بيفصل البرنامج مش بيرضا يفتح
+// bool isInternetConnected = false;
+bool isInternetConnected = true;
+
 class ProductItem extends StatelessWidget {
   static const routeName = '/product_item_route';
-  final Product product;
-  const ProductItem(this.product, {super.key});
+  const ProductItem({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // bool isInternetConnected = true;
-
+    var product = Provider.of<ProductModel>(context);
     var imageUsingInternet = Image.network(
       product.imageUrl,
       width: double.infinity,
@@ -37,8 +39,15 @@ class ProductItem extends StatelessWidget {
               product.title,
               textAlign: TextAlign.center,
             ),
-            leading:
-                buildIconButton(context, Icons.favorite_border_outlined, () {}),
+            // favorite icon
+            leading: buildIconButton(
+                context,
+                product.isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border_outlined, () {
+              product.toggleFavoriteStatus();
+            }),
+            // add to cart icon
             trailing:
                 buildIconButton(context, Icons.local_grocery_store, () {}),
           ),
@@ -48,37 +57,6 @@ class ProductItem extends StatelessWidget {
         ),
       ),
     );
-
-    /* InkWell(
-      onTap: () => Navigator.of(context).pushNamed(
-        ProductDetailsScreen.routeName,
-        arguments: product,
-      ),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(15)),
-            child: Image.network(
-              product.imageUrl,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Positioned(
-            bottom: 10,
-            child: Container(
-              height: 50,
-              color: Colors.black,
-              child: Text(
-                product.title,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-   */
   }
 
   IconButton buildIconButton(ctx, icon, fn) {
