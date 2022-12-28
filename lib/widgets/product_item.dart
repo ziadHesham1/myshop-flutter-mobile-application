@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import '../screens/product_details_screen.dart';
 
 // عشان النت لما بيفصل البرنامج مش بيرضا يفتح
-// bool isInternetConnected = false;
-bool isInternetConnected = true;
+bool isInternetConnected = false;
+// bool isInternetConnected = true;
 
 class ProductItem extends StatelessWidget {
   static const routeName = '/product_item_route';
@@ -40,19 +40,21 @@ class ProductItem extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             // favorite icon
-            leading: buildIconButton(
-                context,
-                product.isFavorite
-                    ? Icons.favorite
-                    : Icons.favorite_border_outlined, () {
-              product.toggleFavoriteStatus();
-            }),
+            leading: Consumer<ProductModel>(
+              builder: (BuildContext context, value, _) =>
+                  buildIconButton(
+                      context,
+                      value.isFavorite
+                          ? Icons.favorite
+                          : Icons.favorite_border_outlined, () {
+                value.toggleFavoriteStatus();
+              }),
+            ),
             // add to cart icon
             trailing:
                 buildIconButton(context, Icons.local_grocery_store, () {}),
           ),
           child:
-              // ignore: dead_code
               isInternetConnected ? imageUsingInternet : imageWithoutInternet,
         ),
       ),
@@ -62,7 +64,7 @@ class ProductItem extends StatelessWidget {
   IconButton buildIconButton(ctx, icon, fn) {
     return IconButton(
       icon: Icon(icon),
-      color: Theme.of(ctx).colorScheme.secondary,
+      color: Colors.deepOrange,
       onPressed: fn,
     );
   }

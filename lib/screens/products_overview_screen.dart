@@ -3,9 +3,17 @@ import '../screens/cart_screen.dart';
 import '../screens/products_grid.dart';
 import '../widgets/main_drawer.dart';
 
-class ProductsOverviewScreen extends StatelessWidget {
-  // the data
+enum FilterOptions { favorite, all }
+
+class ProductsOverviewScreen extends StatefulWidget {
   const ProductsOverviewScreen({super.key});
+
+  @override
+  State<ProductsOverviewScreen> createState() => _ProductsOverviewScreenState();
+}
+
+class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+  var _showFavoriteOnly = false;
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +21,26 @@ class ProductsOverviewScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('MyShop'),
         actions: [
-          IconButton(
-            onPressed: () {},
+          PopupMenuButton(
+            onSelected: (selectedItem) {
+              setState(() {
+                selectedItem == FilterOptions.favorite
+                    ? _showFavoriteOnly = true
+                    : _showFavoriteOnly = false;
+              });
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem(
+                  value: FilterOptions.favorite,
+                  child: Text('Favorites'),
+                ),
+                const PopupMenuItem(
+                  value: FilterOptions.all,
+                  child: Text('All'),
+                ),
+              ];
+            },
             icon: const Icon(Icons.more_vert),
           ),
           IconButton(
@@ -26,7 +52,7 @@ class ProductsOverviewScreen extends StatelessWidget {
         ],
       ),
       drawer: const MainDrawer(),
-      body: const ProductGrid(),
+      body: ProductGrid(_showFavoriteOnly),
     );
   }
 }
