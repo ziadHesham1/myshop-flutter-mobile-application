@@ -5,16 +5,12 @@ import 'package:provider/provider.dart';
 import '../screens/cart_screen.dart';
 import '../screens/products_grid.dart';
 import '../widgets/main_drawer.dart';
-
 enum FilterOptions { favorite, all }
-
 class ProductsOverviewScreen extends StatefulWidget {
   const ProductsOverviewScreen({super.key});
-
   @override
   State<ProductsOverviewScreen> createState() => _ProductsOverviewScreenState();
 }
-
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showFavoriteOnly = false;
   @override
@@ -46,8 +42,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             icon: const Icon(Icons.more_vert),
           ),
           Consumer<CartProvider>(
-            builder: (_, CartProvider cart, Widget? ch) => Badge(
-              value: cart.itemsCount().toString(),
+            builder: (_, CartProvider providedCart, Widget? ch) => Badge(
+              value: providedCart.itemsCount().toString(),
               child: ch as Widget,
             ),
             child: IconButton(
