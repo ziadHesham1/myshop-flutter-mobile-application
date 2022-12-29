@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myshop_flutter_application/providers/product_model.dart';
+import 'package:myshop_flutter_application/providers/cart_provider.dart';
+import 'package:myshop_flutter_application/providers/product_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/product_details_screen.dart';
@@ -14,12 +15,15 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var product = Provider.of<ProductModel>(context);
+    var product = Provider.of<ProductProvider>(context);
+      var providedCartItems = Provider.of<CartProvider>(context);
+
     var imageUsingInternet = Image.network(
       product.imageUrl,
       width: double.infinity,
       fit: BoxFit.cover,
     );
+
     var imageWithoutInternet = Image.asset(
       'no_internet.jpg',
       width: double.infinity,
@@ -40,19 +44,20 @@ class ProductItem extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             // favorite icon
-            leading: Consumer<ProductModel>(
-              builder: (BuildContext context, value, _) =>
-                  buildIconButton(
-                      context,
-                      value.isFavorite
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined, () {
+            leading: Consumer<ProductProvider>(
+              builder: (BuildContext context, value, _) => buildIconButton(
+                  context,
+                  value.isFavorite
+                      ? Icons.favorite
+                      : Icons.favorite_border_outlined, () {
                 value.toggleFavoriteStatus();
               }),
             ),
             // add to cart icon
-            trailing:
-                buildIconButton(context, Icons.local_grocery_store, () {}),
+            trailing: buildIconButton(context, Icons.local_grocery_store, () {
+              providedCartItems.addCartItem(
+                  product.id, product.title, product.price);
+            }),
           ),
           child:
               isInternetConnected ? imageUsingInternet : imageWithoutInternet,

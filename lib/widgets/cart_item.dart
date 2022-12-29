@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:myshop_flutter_application/providers/product_model.dart';
+import 'package:myshop_flutter_application/providers/product_provider.dart';
 
 class CartItem extends StatefulWidget {
-  final ProductModel desiredProduct;
+  final ProductProvider desiredProduct;
 
   const CartItem(this.desiredProduct, {super.key});
 
