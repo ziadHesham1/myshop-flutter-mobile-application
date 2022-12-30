@@ -19,6 +19,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       appBar: AppBar(
         title: const Text('MyShop'),
         actions: [
+          // favorite-all drop menu
           PopupMenuButton(
             onSelected: (selectedItem) {
               setState(() {
@@ -41,6 +42,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             },
             icon: const Icon(Icons.more_vert),
           ),
+          // cart icon button
           Consumer<CartProvider>(
             builder: (_, CartProvider providedCart, Widget? ch) => Badge(
               value: providedCart.itemsCount().toString(),

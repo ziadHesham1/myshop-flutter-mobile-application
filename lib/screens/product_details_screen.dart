@@ -32,21 +32,27 @@ class ProductDetailsScreen extends StatelessWidget {
             child:
                 isInternetConnected ? imageUsingInternet : imageWithoutInternet,
           ),
-          Padding(
-            padding: const EdgeInsets.all(15),
+          // the title
+          Text(
+            '\$${selectedProduct.price}',
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 20,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          // the description
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              '\$${selectedProduct.price}',
+              selectedProduct.description,
               style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 20,
+                fontSize: 16,
               ),
               textAlign: TextAlign.center,
-            ),
-          ),
-          Text(
-            selectedProduct.description,
-            style: const TextStyle(
-              fontSize: 16,
+              softWrap: true,
             ),
           ),
         ],

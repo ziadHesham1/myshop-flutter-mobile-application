@@ -8,6 +8,7 @@ class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    // listening to the CartProvider
     var providedCartItem = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
@@ -15,15 +16,23 @@ class CartScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
+          // the design of the summery widget in the top of the screen
           buildSummaryCard(providedCartItem, context),
-          // const SizedBox(height: 20),
+          const SizedBox(height: 20),
+          // Expanded used with ListView.builder the take all the space available in the screen
           Expanded(
+            // view the list of the products added to cart (providedCartItem.cartItemsGetter)
             child: ListView.builder(
               itemCount: (providedCartItem.cartItemsGetter).length,
               itemBuilder: (BuildContext context, int index) {
-                var cartItemsGetter =
+                // providedCartItem.cartItemsGetter annotation is Map<String, CartItemModel>
+                // both the key and values is needed in the CartItem widget
+                // assigning them to variable for cleaner code
+                var cartItemsKeys =
+                    providedCartItem.cartItemsGetter.keys.toList()[index];
+                var cartItemsValues =
                     providedCartItem.cartItemsGetter.values.toList()[index];
-                return CartItem(cartItemsGetter);
+                return CartItem(cartItemsKeys,cartItemsValues);
               },
             ),
           ),
