@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myshop_flutter_application/providers/cart_provider.dart';
+import 'package:myshop_flutter_application/providers/order_provider.dart';
 import '../providers/products_provider.dart';
 import '../screens/cart_screen.dart';
 import '../screens/orders_screen.dart';
@@ -20,6 +21,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => CartProvider(),
+        ),ChangeNotifierProvider(
+          create: (context) => OrdersProvider(),
         ),
       ],
       child: MaterialApp(
@@ -29,6 +32,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
                 .copyWith(secondary: Colors.deepOrange),
             fontFamily: 'Lato'),
+       
         routes: {
           '/': (context) => const ProductsOverviewScreen(),
           OrdersScreen.routeName: (context) => const OrdersScreen(),

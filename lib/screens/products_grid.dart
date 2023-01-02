@@ -14,8 +14,8 @@ class ProductGrid extends StatelessWidget {
     final providerData = Provider.of<ProductsProvider>(context);
     // view all or favorites items only based on the showFavorites boolean value
     final providedProducts = showFavorites
-        ? providerData.favoritesItemsGetter
-        : providerData.allItemsGetter;
+        ? providerData.favoriteProductItems
+        : providerData.productItems;
     return GridView.builder(
       // grid items dimensions
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -30,7 +30,7 @@ class ProductGrid extends StatelessWidget {
       itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
         // getting ProductProvider for each item in products list
         value: providedProducts[i] as ProductProvider,
-      // widget shown inside each grid item
+        // widget shown inside each grid item
         child: const ProductItem(),
       ),
     );

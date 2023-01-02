@@ -39,11 +39,11 @@ class ProductsProvider with ChangeNotifier {
     ),
   ];
 
-  get allItemsGetter {
+  get productItems {
     return [..._productItems];
   }
 
-  get favoritesItemsGetter {
+  get favoriteProductItems {
     return _productItems.where((element) => element.isFavorite).toList();
   }
 

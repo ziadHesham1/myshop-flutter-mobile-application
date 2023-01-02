@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:myshop_flutter_application/widgets/main_drawer.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/order_provider.dart';
+import '../widgets/order_item.dart';
 
 class OrdersScreen extends StatelessWidget {
   static const routeName = '/orders_route';
@@ -8,25 +12,20 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var totalPayment = 88.75;
-    var paymentDate = DateTime.now;
+    var providedOrders = Provider.of<OrdersProvider>(context);
+
     // List<Product> purchasedProducts = [];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Orders'),
       ),
       drawer: const MainDrawer(),
-      body: Column(
-        children: [
-          ListTile(
-            title: Text(totalPayment.toString()),
-            subtitle: Text(paymentDate.toString()),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.arrow_drop_down),
-            ),
-          )
-        ],
+      body: ListView.builder(
+        itemCount: providedOrders.orders.length,
+        itemBuilder: (BuildContext context, int index) {
+          var order = providedOrders.orders[index];
+          return OrderItem(order);
+        },
       ),
     );
   }

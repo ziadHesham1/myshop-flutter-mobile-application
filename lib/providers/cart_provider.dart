@@ -17,7 +17,7 @@ class CartProvider with ChangeNotifier {
   // ignore: prefer_final_fields
   Map<String, CartItemModel> _cartItems = {};
 
-  Map<String, CartItemModel> get cartItemsGetter => {..._cartItems};
+  Map<String, CartItemModel> get cartItems => {..._cartItems};
 
   void addCartItem(String productId, String title, double price) {
     if (_cartItems.containsKey(productId)) {
@@ -45,12 +45,16 @@ class CartProvider with ChangeNotifier {
   }
 
   void removeCartItem(String id) {
-    _cartItems.remove(id); 
+    _cartItems.remove(id);
+    notifyListeners();
+  }
+
+  void clearCart() {
+    _cartItems = {};
     notifyListeners();
   }
 
   int itemsCount() {
-    // notifyListeners();
     return _cartItems.length;
   }
 
