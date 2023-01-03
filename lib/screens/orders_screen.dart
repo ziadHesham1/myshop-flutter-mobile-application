@@ -13,8 +13,6 @@ class OrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var providedOrders = Provider.of<OrdersProvider>(context);
-
-    // List<Product> purchasedProducts = [];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Orders'),
@@ -23,8 +21,8 @@ class OrdersScreen extends StatelessWidget {
       body: ListView.builder(
         itemCount: providedOrders.orders.length,
         itemBuilder: (BuildContext context, int index) {
-          var order = providedOrders.orders[index];
-          return OrderItem(order);
+          var orders = providedOrders.orders;
+          return OrderItem(orders[index]);
         },
       ),
     );

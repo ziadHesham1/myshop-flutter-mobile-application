@@ -9,16 +9,20 @@ import '../screens/product_details_screen.dart';
 bool isInternetConnected = false;
 // bool isInternetConnected = true;
 
+// ignore: must_be_immutable
 class ProductItem extends StatelessWidget {
+  // ignore: prefer_typing_uninitialized_variables
+  var ctx;
   static const routeName = '/product_item_route';
-  const ProductItem({super.key});
+  ProductItem({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var product = Provider.of<ProductProvider>(context);
+    ctx = context;
+    var providedProduct = Provider.of<ProductProvider>(context);
     var providedCartItems = Provider.of<CartProvider>(context);
     var imageUsingInternet = Image.network(
-      product.imageUrl,
+      providedProduct.imageUrl,
       width: double.infinity,
       fit: BoxFit.cover,
     );
@@ -32,7 +36,7 @@ class ProductItem extends StatelessWidget {
       // go to the product detail screen when the widget pressed
       onTap: () => Navigator.of(context).pushNamed(
         ProductDetailsScreen.routeName,
-        arguments: product,
+        arguments: providedProduct,
       ),
       // make the gird item corners rounded
       child: ClipRRect(
@@ -45,26 +49,39 @@ class ProductItem extends StatelessWidget {
             backgroundColor: Colors.black87,
 
             // the title of th product center of the GridTileBar
-            title: Text(product.title, textAlign: TextAlign.center),
+            title: Text(providedProduct.title, textAlign: TextAlign.center),
 
             //toggled favorite icon on the left of the GridTileBar
             // listening to the ProductProvider the get (isFavorite) boolean value
             leading: Consumer<ProductProvider>(
               builder: (BuildContext context, value, _) => buildIconButton(
-                  context,
                   // when icon pressed it toggle the isFavorite value and change its icon
                   value.isFavorite
                       ? Icons.favorite
                       : Icons.favorite_border_outlined, () {
                 value.toggleFavoriteStatus();
+                buildSnackbar(
+                  value.isFavorite
+                      ? '${providedProduct.title} added to the to favorites'
+                      : '${providedProduct.title} removed from the favorites',
+                  () {
+                    providedProduct.toggleFavoriteStatus();
+                  },
+                );
               }),
             ),
 
             // cart icon on the left of the GridTileBar
-            trailing: buildIconButton(context, Icons.local_grocery_store, () {
-              providedCartItems.addCartItem(
-                  product.id, product.title, product.price);
-            }),
+            trailing: buildIconButton(
+              Icons.local_grocery_store,
+              () {
+                providedCartItems.addCartItem(providedProduct.id,
+                    providedProduct.title, providedProduct.price);
+                buildSnackbar('${providedProduct.title} added to the cart', () {
+                  providedCartItems.removeSingleItem(providedProduct.id);
+                });
+              },
+            ),
           ),
           //  the main child of the GridTile : the product image
           child:
@@ -74,12 +91,23 @@ class ProductItem extends StatelessWidget {
     );
   }
 
+  void buildSnackbar(title, undoFn) {
+    ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
+    ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+      content: Text(title),
+      duration: const Duration(seconds: 2),
+      action: SnackBarAction(
+        label: 'UNDO',
+        onPressed: () {
+          undoFn();
+        },
+      ),
+    ));
+  }
+
 // building the icon button using custom function for cleaner code
-  IconButton buildIconButton(ctx, icon, fn) {
+  IconButton buildIconButton(icon, fn) {
     return IconButton(
-      icon: Icon(icon),
-      color: Colors.deepOrange,
-      onPressed: fn,
-    );
+        icon: Icon(icon), color: Colors.deepOrange, onPressed: fn);
   }
 }

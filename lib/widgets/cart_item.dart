@@ -20,9 +20,33 @@ class CartItem extends StatelessWidget {
     return Dismissible(
       key: ValueKey(cartItemId),
       direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+              title: const Text('Are you sure?'),
+              content:
+                  const Text('Do you want to remove this item from the cart?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop(false);
+                  },
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop(true);
+                  },
+                  child: const Text('Yes'),
+                ),
+              ]),
+        );
+      },
       onDismissed: (direction) {
-      // direction argument is used to give a different action for each swipe direction
-        Provider.of<CartProvider>(context,listen: false).removeCartItem(cartItemId);
+        // direction argument is used to give a different action for each swipe direction
+        Provider.of<CartProvider>(context, listen: false)
+            .removeItem(cartItemId);
       },
       background: Container(
         color: Theme.of(context).errorColor,
@@ -52,7 +76,7 @@ class CartItem extends StatelessWidget {
                 child: Text(
                   '$cartItemPrice',
                   style: const TextStyle(color: Colors.white),
-                  // to make sure the text is not cropped out because of the space 
+                  // to make sure the text is not cropped out because of the space
                   overflow: TextOverflow.visible,
                 ),
               ),

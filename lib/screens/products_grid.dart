@@ -31,7 +31,7 @@ class ProductGrid extends StatelessWidget {
         // getting ProductProvider for each item in products list
         value: providedProducts[i] as ProductProvider,
         // widget shown inside each grid item
-        child: const ProductItem(),
+        child:  ProductItem(),
       ),
     );
   }
