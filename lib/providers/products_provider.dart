@@ -4,7 +4,7 @@ import 'product_provider.dart';
 
 class ProductsProvider with ChangeNotifier {
   // ignore: prefer_final_fields
-  var _productItems = [
+  List<ProductProvider> _productsItems = [
     ProductProvider(
       id: 'p1',
       title: 'Red Shirt',
@@ -39,15 +39,36 @@ class ProductsProvider with ChangeNotifier {
     ),
   ];
 
-  get productItems {
-    return [..._productItems];
+  List<ProductProvider> get productItems {
+    return [..._productsItems];
   }
 
   get favoriteProductItems {
-    return _productItems.where((element) => element.isFavorite).toList();
+    return _productsItems.where((element) => element.isFavorite).toList();
   }
 
   ProductProvider findProductById(productId) {
-    return _productItems.firstWhere((product) => product.id == productId);
+    return _productsItems.firstWhere((product) => product.id == productId);
+  }
+
+  void addProduct(id, title, description, price, imageUrl) {
+    _productsItems.add(ProductProvider(
+      id: id,
+      title: title,
+      description: description,
+      price: price,
+      imageUrl: imageUrl,
+    ));
+  }
+
+  void updateProduct(productId, title, description, price, imageUrl) {
+    var productIndex =
+        _productsItems.indexWhere((product) => product.id == productId);
+    _productsItems[productIndex] = ProductProvider(
+        id: _productsItems[productIndex].id,
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl);
   }
 }
