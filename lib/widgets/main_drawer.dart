@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myshop_flutter_application/screens/orders_screen.dart';
-import 'package:myshop_flutter_application/screens/user_products_screen.dart';
+import 'package:myshop_flutter_application/widgets/user_products_screen.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -14,10 +14,12 @@ class MainDrawer extends StatelessWidget {
             title: const Text('Hello Friend!'),
           ),
           buildListTile(context, 'Shop', Icons.shop, '/'),
+          const Divider(),
           buildListTile(
               context, 'Orders', Icons.credit_card, OrdersScreen.routeName),
-          buildListTile(
-              context, 'Manage Products', Icons.edit, UserProductsScreen.routeName),
+          const Divider(),
+          buildListTile(context, 'Manage Products', Icons.edit,
+              UserProductsScreen.routeName),
         ],
       ),
     );

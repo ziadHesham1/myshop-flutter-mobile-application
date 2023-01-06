@@ -19,29 +19,31 @@ class EditProductScreen extends StatelessWidget {
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
-        child: Column(
-          children: const [
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Title',
+        child: Form(
+          child: ListView(
+            children:  [
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Title',
+                ),
               ),
-            ),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Price',
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Price',
+                ),
               ),
-            ),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Description',
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                ),
               ),
-            ),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Image URL',
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Image URL',
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -10,7 +10,7 @@ import '../screens/product_details_screen.dart';
 import '../screens/products_overview_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'screens/user_products_screen.dart';
+import 'widgets/user_products_screen.dart';
 
 void main() => runApp(const MyApp());
 
