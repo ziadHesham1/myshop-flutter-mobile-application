@@ -52,13 +52,15 @@ class ProductsProvider with ChangeNotifier {
   }
 
   void addProduct(id, title, description, price, imageUrl) {
-    _productsItems.add(ProductProvider(
-      id: id,
-      title: title,
-      description: description,
-      price: price,
-      imageUrl: imageUrl,
-    ));
+    _productsItems.add(
+      ProductProvider(
+        id: id,
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl,
+      ),
+    );
   }
 
   void updateProduct(productId, title, description, price, imageUrl) {

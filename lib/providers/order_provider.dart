@@ -22,7 +22,9 @@ class OrdersProvider with ChangeNotifier {
 
   void addOrder(List<CartItemModel> cartProducts, double total) {
     _orders.insert(
+      // the index of the new element
         0,
+      // the new element
         OrderItemModel(
           id: DateTime.now().toString(),
           amount: total,

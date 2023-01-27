@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:myshop_flutter_application/providers/products_provider.dart';
 
-import '../providers/product_provider.dart';
-
-class EditProductScreen extends StatelessWidget {
+class EditProductScreen extends StatefulWidget {
   static const routeName = '/EditProductScreen';
   const EditProductScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    /* ProductProvider providedProduct =
-        ModalRoute.of(context)!.settings.arguments as ProductProvider;
- */
+  State<EditProductScreen> createState() => _EditProductScreenState();
+}
+
+class _EditProductScreenState extends State<EditProductScreen> {
+  final FocusNode _priceFocusNode = FocusNode();
+  final FocusNode _descriptionFocusNode = FocusNode();
+  // final _form = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {  
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Product'),
@@ -20,27 +23,33 @@ class EditProductScreen extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.all(10),
         child: Form(
+          // key: _form,
           child: ListView(
-            children:  [
+            children: [
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Title',
-                ),
+                // enabled: true,
+                decoration: const InputDecoration(labelText: 'Title'),
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(_priceFocusNode),
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Price',
-                ),
+                decoration: const InputDecoration(labelText: 'Price'),
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.number,
+                focusNode: _priceFocusNode,
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(_descriptionFocusNode),
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                ),
+                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 3,
+                keyboardType: TextInputType.multiline,
+                focusNode: _descriptionFocusNode,
+               
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Image URL',
-                ),
+                decoration: const InputDecoration(labelText: 'Image Url'),
               ),
             ],
           ),

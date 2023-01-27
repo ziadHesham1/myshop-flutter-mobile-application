@@ -5,7 +5,6 @@ import 'package:myshop_flutter_application/widgets/main_drawer.dart';
 import 'package:myshop_flutter_application/widgets/product_item.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/add_product_screen.dart';
 import '../screens/user_product_item.dart';
 
 class UserProductsScreen extends StatefulWidget {
@@ -26,7 +25,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(AddProductScreen.routeName);
+                Navigator.of(context).pushNamed(EditProductScreen.routeName);
               },
               icon: const Icon(Icons.add))
         ],
