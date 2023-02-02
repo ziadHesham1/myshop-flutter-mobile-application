@@ -1,16 +1,6 @@
 {
 	"files": [
 		{
-			"path": "lib/providers/products_provider.dart",
-			"bookmarks": [
-				{
-					"line": 4,
-					"column": 4,
-					"label": "ProductsProvider File"
-				}
-			]
-		},
-		{
 			"path": "lib/widgets/product_item.dart",
 			"bookmarks": [
 				{
@@ -39,7 +29,7 @@
 					"label": "products provider Listen"
 				},
 				{
-					"line": 27,
+					"line": 30,
 					"column": 6,
 					"label": "ProductaModel porvider Call"
 				}

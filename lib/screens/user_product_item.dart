@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myshop_flutter_application/providers/product_provider.dart';
+import 'package:myshop_flutter_application/providers/products_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/product_item.dart';
 import 'edit_product_screen.dart';
@@ -28,6 +30,7 @@ class _UserProductItemState extends State<UserProductItem> {
             width: 100,
             child: Row(
               children: [
+                // edit product icon button
                 IconButton(
                   onPressed: () {
                     setState(() {
@@ -40,7 +43,10 @@ class _UserProductItemState extends State<UserProductItem> {
                       color: Theme.of(context).colorScheme.primary),
                 ),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Provider.of<ProductsProvider>(context, listen: false)
+                          .deleteProduct(widget.productItem.id);
+                    },
                     icon: const Icon(
                       Icons.delete,
                       color: Colors.red,

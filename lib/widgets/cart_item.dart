@@ -49,7 +49,7 @@ class CartItem extends StatelessWidget {
             .removeItem(cartItemId);
       },
       background: Container(
-        color: Theme.of(context).errorColor,
+        color: Theme.of(context).colorScheme.error,
         alignment: Alignment.centerRight,
         /*  to make sure that the background is only behind the card
          set the same margin assigned to the card */

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'product_provider.dart';
+import 'package:http/http.dart' as http;
 
 class ProductsProvider with ChangeNotifier {
+  ProductsProvider() {
+    print('ProductsProvider is called');
+  }
+
   // ignore: prefer_final_fields
-  List<ProductProvider> _productsItems = [
+  List<ProductProvider> _products = [
     ProductProvider(
       id: 'p1',
       title: 'Red Shirt',
@@ -40,37 +45,66 @@ class ProductsProvider with ChangeNotifier {
   ];
 
   List<ProductProvider> get productItems {
-    return [..._productsItems];
+    return [..._products];
   }
 
   get favoriteProductItems {
-    return _productsItems.where((element) => element.isFavorite).toList();
+    return _products.where((element) => element.isFavorite).toList();
   }
 
   ProductProvider findProductById(productId) {
-    return _productsItems.firstWhere((product) => product.id == productId);
+    return _products.firstWhere((product) => product.id == productId);
   }
 
-  void addProduct(id, title, description, price, imageUrl) {
-    _productsItems.add(
-      ProductProvider(
-        id: id,
-        title: title,
-        description: description,
-        price: price,
-        imageUrl: imageUrl,
-      ),
-    );
+  void addProduct(id, title, description, double price, imageUrl) {
+    const url = 'https://myshop-flutter-app-9477e-default-rtdb.firebaseio.com';
+
+    ProductProvider productToAdd;
+    /*  bool nameExist = _products.firstWhereOrNull(
+        (ProductProvider element) => element.title.contains(newProduct.title))!=null?true:false; */
+    int sameNameCount = _products
+        .where((ProductProvider element) => element.title.contains(title))
+        .length;
+
+    if (sameNameCount > 0) {
+      productToAdd = ProductProvider(
+          id: id,
+          title: '$title ($sameNameCount)',
+          description: description,
+          price: price,
+          imageUrl: imageUrl);
+    } else {
+      productToAdd = ProductProvider(
+          id: id,
+          title: title,
+          description: description,
+          price: price,
+          imageUrl: imageUrl);
+    }
+    _products.add(productToAdd);
+    notifyListeners();
   }
 
-  void updateProduct(productId, title, description, price, imageUrl) {
+  void updateProduct(
+      productId, title, description, price, imageUrl, isFavorite) {
     var productIndex =
-        _productsItems.indexWhere((product) => product.id == productId);
-    _productsItems[productIndex] = ProductProvider(
-        id: _productsItems[productIndex].id,
-        title: title,
-        description: description,
-        price: price,
-        imageUrl: imageUrl);
+        _products.indexWhere((product) => product.id == productId);
+    _products[productIndex] = ProductProvider(
+      id: _products[productIndex].id,
+      title: title,
+      description: description,
+      price: price,
+      imageUrl: imageUrl,
+      isFavorite: isFavorite,
+    );
+    notifyListeners();
+  }
+
+  void deleteProduct(productId) {
+    var productIndex =
+        _products.indexWhere((element) => element.id == productId);
+
+    _products.removeAt(productIndex);
+    notifyListeners();
   }
 }
