@@ -34,12 +34,19 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final FocusNode _priceFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
   final _imgFocusNode = FocusNode();
-  final _imgController = TextEditingController();
+  final _imgController = TextEditingController(text: 'http');
 
   final _formKey = GlobalKey<FormState>();
-  var _editedProduct =
-      EditedProduct(id: '', title: '', description: '', price: 0, imageUrl: '');
+  /* var _editedProduct =
+      EditedProduct(id: '', title: '', description: '', price: 0, imageUrl: ''); */
+  var _editedProduct = EditedProduct(
+      id: '',
+      title: 'Great Product',
+      description: 'this is the product that will change your life',
+      price: 1000,
+      imageUrl: '');
 
+  bool _isLoading = false;
   // to listen to changes of the img field focus
   @override
   void initState() {
@@ -93,7 +100,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm(ctx) {
+  Future<void> _saveForm(ctx) async {
     final isValid = _formKey.currentState!.validate();
     var productsProvider =
         Provider.of<ProductsProvider>(context, listen: false);
@@ -101,25 +108,46 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _formKey.currentState!.save();
+    setState(() => _isLoading = true);
+
     if (_editedProduct.id.isNotEmpty) {
       productsProvider.updateProduct(
-        _editedProduct.id,
-        _editedProduct.title,
-        _editedProduct.description,
-        _editedProduct.price,
-        _editedProduct.imageUrl,
-        _editedProduct.isFavorite,
-      );
+          _editedProduct.id,
+          _editedProduct.title,
+          _editedProduct.description,
+          _editedProduct.price,
+          _editedProduct.imageUrl,
+          _editedProduct.isFavorite);
+      setState(() => _isLoading = false);
     } else {
-      productsProvider.addProduct(
-        _editedProduct.id,
-        _editedProduct.title,
-        _editedProduct.description,
-        _editedProduct.price,
-        _editedProduct.imageUrl,
-      );
+      try {
+        await productsProvider.addProduct(
+            _editedProduct.title,
+            _editedProduct.description,
+            _editedProduct.price,
+            _editedProduct.imageUrl);
+      } catch (error) {
+        await showDialog<void>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('An error occurred!'),
+              content: Text(error.toString()),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Okay'))
+              ],
+            );
+          },
+        );
+      } finally {
+        setState(() => _isLoading = false);
+        Navigator.pop(ctx);
+      }
     }
-    Navigator.pop(ctx);
   }
 
   @override
@@ -129,31 +157,33 @@ class _EditProductScreenState extends State<EditProductScreen> {
         title: const Text('Edit Product'),
         actions: [
           IconButton(
-            onPressed: () {
-              _saveForm(context);
-            },
+            onPressed: () => _saveForm(context),
             icon: const Icon(Icons.save),
           ),
         ],
       ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              // title
-              buildTitleField(context),
-              // price
-              buildPriceField(context),
-              // description
-              buildDescriptionField(),
-              //  Image URL & Preview
-              buildImageField(context)
-            ],
-          ),
-        ),
-      ),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(10),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    // title
+                    buildTitleField(context),
+                    // price
+                    buildPriceField(context),
+                    // description
+                    buildDescriptionField(),
+                    //  Image URL & Preview
+                    buildImageField(context)
+                  ],
+                ),
+              ),
+            ),
     );
   }
 

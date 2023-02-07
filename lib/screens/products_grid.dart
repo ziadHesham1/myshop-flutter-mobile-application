@@ -7,34 +7,73 @@ import '../widgets/product_item.dart';
 
 class ProductGrid extends StatelessWidget {
   final bool showFavorites;
-  const ProductGrid(this.showFavorites, {Key? key}) : super(key: key);
+  final bool _isLoading;
+
+  const ProductGrid(this.showFavorites, this._isLoading, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final providerData = Provider.of<ProductsProvider>(context);
+    final ProductsProvider productsProvider =
+        Provider.of<ProductsProvider>(context);
     // view all or favorites items only based on the showFavorites boolean value
-    final providedProducts = showFavorites
-        ? providerData.favoriteProductItems
-        : providerData.productItems;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GridView.builder(
-        // grid items dimensions
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 3 / 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        // grid items number
-        itemCount: providedProducts.length,
-        // repeat the returned widget for each item in the grid
-        itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-          // getting ProductProvider for each item in products list
-          value: providedProducts[i] as ProductProvider,
-          // widget shown inside each grid item
-          child:  ProductItem(),
-        ),
+    final List<ProductProvider> providedProducts = showFavorites
+        ? productsProvider.favoriteProductItems
+        : productsProvider.productItems;
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GridView.builder(
+              // grid items dimensions
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 3 / 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              // grid items number
+              itemCount: providedProducts.length,
+              // repeat the returned widget for each item in the grid
+              itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+                // getting ProductProvider for each item in products list
+                value: providedProducts[i],
+                // widget shown inside each grid item
+                child: ProductItem(),
+              ),
+            ),
+          );
+  }
+}
+
+class AddNewProductsWidget extends StatefulWidget {
+  final ProductsProvider productsProvider;
+  const AddNewProductsWidget(
+    this.productsProvider, {
+    super.key,
+  });
+
+  @override
+  State<AddNewProductsWidget> createState() => _AddNewProductsWidgetState();
+}
+
+class _AddNewProductsWidgetState extends State<AddNewProductsWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          ElevatedButton(onPressed: () {}, child: const Text('Add a product')),
+          ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  widget.productsProvider.pushDummyProduct();
+                });
+              },
+              child: const Text('Add dummy products')),
+        ],
       ),
     );
   }

@@ -34,7 +34,6 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
           IconButton(
             onPressed: () {
               productsProvider.addProduct(
-                'NewId ${DateTime.now.toString()}',
                 'New Product',
                 'this is a thing that can do a thing',
                 1000,
@@ -46,11 +45,16 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
         ],
       ),
       drawer: const MainDrawer(),
-      body: ListView.builder(
-        itemCount: productItems.length,
-        itemBuilder: (context, index) {
-          return UserProductItem(productItems[index]);
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await productsProvider.fetchAndSetProducts();
         },
+        child: ListView.builder(
+          itemCount: productItems.length,
+          itemBuilder: (context, index) {
+            return UserProductItem(productItems[index]);
+          },
+        ),
       ),
     );
   }
