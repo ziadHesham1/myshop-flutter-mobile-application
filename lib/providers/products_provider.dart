@@ -9,8 +9,8 @@ class ProductsProvider with ChangeNotifier {
     print('ProductsProvider is called');
   }
 
-  final url = Uri.parse(
-      'https://myshop-flutter-app-9477e-default-rtdb.firebaseio.com/products.json');
+  var url = 'https://myshop-flutter-app-9477e-default-rtdb.firebaseio.com';
+  get productsUrl => '$url/products.json';
   // ignore: prefer_final_fields
   List<ProductProvider> _products = [];
 
@@ -49,7 +49,7 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> fetchAndSetProducts() async {
     try {
-      final http.Response response = await http.get(url);
+      final http.Response response = await http.get(Uri.parse(productsUrl));
       final Map<String, dynamic> extractedData =
           json.decode(response.body) as Map<String, dynamic>;
       List<ProductProvider> loadedData = [];
@@ -85,8 +85,8 @@ class ProductsProvider with ChangeNotifier {
     };
 
     try {
-      final http.Response response =
-          await http.post(url, body: json.encode(newProductMap));
+      final http.Response response = await http.post(Uri.parse(productsUrl),
+          body: json.encode(newProductMap));
       // .then((response) {
       _products.add(ProductProvider(
           id: json.decode(response.body)['name'],
@@ -143,19 +143,38 @@ class ProductsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateProduct(
-      productId, title, description, price, imageUrl, isFavorite) {
-    var productIndex =
+  Future<void> updateProduct(
+      productId, title, description, price, imageUrl, isFavorite) async {
+    int productIndex =
         _products.indexWhere((product) => product.id == productId);
-    _products[productIndex] = ProductProvider(
-      id: _products[productIndex].id,
-      title: title,
-      description: description,
-      price: price,
-      imageUrl: imageUrl,
-      isFavorite: isFavorite,
-    );
-    notifyListeners();
+    if (productIndex >= 0) {
+      try {
+        final productUrl = Uri.parse('$url/products/$productId.json');
+        Map<String, dynamic> newProductMap = {
+          'title': title,
+          'description': description,
+          'price': price,
+          'imageUrl': imageUrl,
+          'isFavorite': false,
+        };
+        await http.patch(productUrl, body: json.encode(newProductMap));
+        print('the product $title should be updated on firebase');
+        _products[productIndex] = ProductProvider(
+          id: _products[productIndex].id,
+          title: title,
+          description: description,
+          price: price,
+          imageUrl: imageUrl,
+          isFavorite: isFavorite,
+        );
+        notifyListeners();
+      } catch (error) {
+        print(error);
+        // rethrow;
+      }
+    } else {
+      print('update failed!! Product not found');
+    }
   }
 
   void deleteProduct(productId) {

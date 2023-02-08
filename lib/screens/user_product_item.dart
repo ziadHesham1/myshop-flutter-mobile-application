@@ -20,6 +20,12 @@ class _UserProductItemState extends State<UserProductItem> {
     return Column(
       children: [
         ListTile(
+          onTap: () {
+            setState(() {
+              Navigator.of(context).pushNamed(EditProductScreen.routeName,
+                  arguments: widget.productItem);
+            });
+          },
           title: Text(widget.productItem.title),
           leading: CircleAvatar(
             backgroundImage: isInternetConnected

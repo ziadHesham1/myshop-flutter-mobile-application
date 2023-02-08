@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../screens/product_details_screen.dart';
 
 // عشان النت لما بيفصل البرنامج مش بيرضا يفتح
-bool isInternetConnected = false;
+bool isInternetConnected = true;
 // bool isInternetConnected = true;
 
 // ignore: must_be_immutable

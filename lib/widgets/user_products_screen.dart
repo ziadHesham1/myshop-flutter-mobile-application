@@ -35,9 +35,9 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
             onPressed: () {
               productsProvider.addProduct(
                 'New Product',
-                'this is a thing that can do a thing',
+                'this is an empty product',
                 1000,
-                'http/dummy_website/dum.png',
+                'https://www.shareicon.net/data/128x128/2015/05/20/41190_empty_256x256.png',
               );
             },
             icon: const Icon(Icons.add_box_outlined),

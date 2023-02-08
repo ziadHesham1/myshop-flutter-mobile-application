@@ -34,7 +34,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final FocusNode _priceFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
   final _imgFocusNode = FocusNode();
-  final _imgController = TextEditingController(text: 'http');
+  final _imgController = TextEditingController(
+      text: 'https://www.shareicon.net/data/128x128/2015/05/20/41190_empty_256x256.png');
 
   final _formKey = GlobalKey<FormState>();
   /* var _editedProduct =
@@ -61,6 +62,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (!isInit) {
       ProductProvider? selectedProduct =
           ModalRoute.of(context)!.settings.arguments as ProductProvider?;
+      // setting the _editedProduct to the old product values to be shown in the form
       if (selectedProduct != null) {
         _editedProduct = EditedProduct(
           id: selectedProduct.id,
@@ -100,6 +102,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
+// this function adds a new product or update an existing one
   Future<void> _saveForm(ctx) async {
     final isValid = _formKey.currentState!.validate();
     var productsProvider =
@@ -109,16 +112,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
     _formKey.currentState!.save();
     setState(() => _isLoading = true);
-
+    // updating an existing product
     if (_editedProduct.id.isNotEmpty) {
-      productsProvider.updateProduct(
+      await productsProvider.updateProduct(
           _editedProduct.id,
           _editedProduct.title,
           _editedProduct.description,
           _editedProduct.price,
           _editedProduct.imageUrl,
           _editedProduct.isFavorite);
-      setState(() => _isLoading = false);
     } else {
       try {
         await productsProvider.addProduct(
@@ -143,10 +145,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
             );
           },
         );
-      } finally {
-        setState(() => _isLoading = false);
-        Navigator.pop(ctx);
       }
+      setState(() => _isLoading = false);
+      Navigator.pop(ctx);
     }
   }
 
@@ -271,8 +272,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
             child: (_imgController.text.isNotEmpty)
                 ? FittedBox(
                     fit: BoxFit.cover,
-                    // child: Image.network(_imgController.text),
-                    child: Image.asset('no_internet.jpg'),
+                    child: Image.network(_imgController.text),
+                    // child: Image.asset('no_internet.jpg'),
                   )
                 : const Text('Enter URL')),
         //  Image URL input
