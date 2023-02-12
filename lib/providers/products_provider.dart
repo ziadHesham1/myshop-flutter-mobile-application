@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+// import '../models/app_http_exception.dart';
+import '../globals/global_variables.dart';
 import 'product_provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,8 +11,6 @@ class ProductsProvider with ChangeNotifier {
     print('ProductsProvider is called');
   }
 
-  var url = 'https://myshop-flutter-app-9477e-default-rtdb.firebaseio.com';
-  get productsUrl => '$url/products.json';
   // ignore: prefer_final_fields
   List<ProductProvider> _products = [];
 
@@ -47,32 +47,6 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchAndSetProducts() async {
-    try {
-      final http.Response response = await http.get(Uri.parse(productsUrl));
-      final Map<String, dynamic> extractedData =
-          json.decode(response.body) as Map<String, dynamic>;
-      List<ProductProvider> loadedData = [];
-      extractedData.forEach((key, value) {
-        print('Product : ${value['title']} is fetched from the database');
-        loadedData.add(
-          ProductProvider(
-              id: key,
-              title: value['title'],
-              description: value['description'],
-              price: value['price'],
-              imageUrl: value['imageUrl']),
-        );
-      });
-      _products = loadedData;
-      notifyListeners();
-    } catch (error) {
-      print(
-          'Error catched in the fetchAndSetProducts function in the ProductsProvider ${error.toString()}');
-      rethrow;
-    }
-  }
-
   Future<void> addProduct(title, description, double price, imageUrl) async {
     title = sameTitleCounter(title);
     // pushing new product to database
@@ -85,8 +59,8 @@ class ProductsProvider with ChangeNotifier {
     };
 
     try {
-      final http.Response response = await http.post(Uri.parse(productsUrl),
-          body: json.encode(newProductMap));
+      final http.Response response = await http
+          .post(GlobalVariables.productsUrl, body: json.encode(newProductMap));
       // .then((response) {
       _products.add(ProductProvider(
           id: json.decode(response.body)['name'],
@@ -143,13 +117,48 @@ class ProductsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> fetchAndSetProducts() async {
+    try {
+      final http.Response response =
+          await http.get(GlobalVariables.productsUrl);
+      final Map<String, dynamic>? extractedData =
+          json.decode(response.body) as Map<String, dynamic>?;
+      if (extractedData != null) {
+        List<ProductProvider> loadedData = [];
+        extractedData.forEach((key, value) {
+          print('Product : ${value['title']} is fetched from the database');
+          loadedData.add(
+            ProductProvider(
+                id: key,
+                title: value['title'],
+                description: value['description'],
+                price: value['price'],
+                imageUrl: value['imageUrl'],
+                isFavorite: value['isFavorite']),
+          );
+        });
+        _products = loadedData;
+        notifyListeners();
+      } else {
+        print('Error in fetchAndSetProducts Fn: the extractedData = null');
+
+        _products = [];
+      }
+    } catch (error) {
+      print(
+          'Error catched in the fetchAndSetProducts function in the ProductsProvider ${error.toString()}');
+      rethrow;
+    }
+  }
+
   Future<void> updateProduct(
       productId, title, description, price, imageUrl, isFavorite) async {
     int productIndex =
         _products.indexWhere((product) => product.id == productId);
     if (productIndex >= 0) {
       try {
-        final productUrl = Uri.parse('$url/products/$productId.json');
+        final productUrl =
+            Uri.parse('$GlobalVariables.url.url/products/$productId.json');
         Map<String, dynamic> newProductMap = {
           'title': title,
           'description': description,
@@ -177,11 +186,56 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  void deleteProduct(productId) {
+  Future<void> deleteProduct(productId) async {
     var productIndex =
         _products.indexWhere((element) => element.id == productId);
-
+    // delete from the DB
+    // store the product that will be deleted temporary
+    // in case there is a problem in deleting it from the DB
+    ProductProvider? existingProduct = _products[productIndex];
+    // delete the desired product locally
     _products.removeAt(productIndex);
+    // to update the UI immediately when the product is deleted and restore it
+    // if there's an error and deleting it from the DB failed
+    notifyListeners();
+
+    http.Response response =
+        await http.delete(GlobalVariables.productUrl(productId));
+    // check if there's an error with deleting the product from the DB
+    // it insert the product back to the product list and throw an error
+    if (response.statusCode >= 400) {
+      _products.insert(productIndex, existingProduct);
+      notifyListeners();
+      // throw AppHttpException('Couldn\'t delete product');
+    }
+    //
+    existingProduct = null;
+
+    notifyListeners();
+  }
+
+  Future<void> deleteAllProducts() async {
+    // delete from the DB
+    // store the product that will be deleted temporary
+    // in case there is a problem in deleting it from the DB
+    var existingProduct = _products;
+    // delete the desired product locally
+    _products = [];
+    // to update the UI immediately when the product is deleted and restore it
+    // if there's an error and deleting it from the DB failed
+    notifyListeners();
+
+    http.Response response = await http.delete(GlobalVariables.productsUrl);
+    // check if there's an error with deleting the product from the DB
+    // it insert the product back to the product list and throw an error
+    if (response.statusCode >= 400) {
+      _products = existingProduct;
+      notifyListeners();
+      // throw AppHttpException('Couldn\'t delete product');
+    }
+    //
+    existingProduct = [];
+
     notifyListeners();
   }
 }

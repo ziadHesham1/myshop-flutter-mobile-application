@@ -15,6 +15,8 @@ class ProductsOverviewScreen extends StatefulWidget {
   State<ProductsOverviewScreen> createState() => _ProductsOverviewScreenState();
 }
 
+bool errorAccrued = false;
+
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showFavoriteOnly = false;
   var _isInit = true;
@@ -26,9 +28,12 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       setState(() => _isLoading = true);
 
       print('ProductsOverviewScreen called for the first time');
+      // Provider.of<ProductsProvider>(context).pushDummyProduct();
       Provider.of<ProductsProvider>(context)
           .fetchAndSetProducts()
-          .then((value) {
+          .catchError((e) {
+        errorAccrued = true;
+      }).then((value) {
         setState(() => _isLoading = false);
       });
     }
@@ -38,6 +43,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+        print('ProductsOverviewScreen is called');
+
+    final ProductsProvider productsProvider =
+        Provider.of<ProductsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('MyShop'),
@@ -78,14 +87,63 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               icon: const Icon(Icons.local_grocery_store),
             ),
           ),
+          /*  () {
+                setState(() {
+                  widget.productsProvider.pushDummyProduct();
+                });
+        */
+          IconButton(
+            onPressed: () {
+              setState(() {
+                productsProvider.pushDummyProduct();
+              });
+            },
+            icon: const Icon(Icons.add_circle_outline),
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                productsProvider.deleteAllProducts();
+              });
+            },
+            icon: const Icon(Icons.delete_forever_rounded),
+          ),
         ],
       ),
       drawer: const MainDrawer(),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+      body: errorAccrued
+          ? const ErrorWidget()
           : ProductGrid(_showFavoriteOnly, _isLoading),
     );
+  }
+}
+
+class ErrorWidget extends StatefulWidget {
+  const ErrorWidget({
+    super.key,
+  });
+
+  @override
+  State<ErrorWidget> createState() => _ErrorWidgetState();
+}
+
+class _ErrorWidgetState extends State<ErrorWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text('Error Accrued, check your internet connection'),
+        ElevatedButton(
+            onPressed: () { 
+              setState(() {
+                errorAccrued = false;
+
+              });
+            },
+            child: const Text('Try again'))
+      ],
+    ));
   }
 }

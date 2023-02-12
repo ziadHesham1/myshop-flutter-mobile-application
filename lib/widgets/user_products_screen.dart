@@ -48,6 +48,8 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
       body: RefreshIndicator(
         onRefresh: () async {
           await productsProvider.fetchAndSetProducts();
+
+          // await productsProvider.fetchAndSetProducts();
         },
         child: ListView.builder(
           itemCount: productItems.length,

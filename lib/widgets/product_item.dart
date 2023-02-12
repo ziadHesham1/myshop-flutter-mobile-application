@@ -18,6 +18,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('ProductItem is called');
     ctx = context;
     var providedProduct = Provider.of<ProductProvider>(context);
     var providedCartItems = Provider.of<CartProvider>(context);
@@ -60,12 +61,16 @@ class ProductItem extends StatelessWidget {
                       ? Icons.favorite
                       : Icons.favorite_border_outlined, () {
                 value.toggleFavoriteStatus();
+
+                // value.toggleFavoriteStatus(providedProduct.id);
                 buildSnackbar(
                   value.isFavorite
                       ? '${providedProduct.title} added to the to favorites'
                       : '${providedProduct.title} removed from the favorites',
                   () {
                     providedProduct.toggleFavoriteStatus();
+
+                    // providedProduct.toggleFavoriteStatus(providedProduct.id);
                   },
                 );
               }),

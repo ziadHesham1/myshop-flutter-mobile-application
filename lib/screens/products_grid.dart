@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myshop_flutter_application/providers/product_provider.dart';
+import 'package:myshop_flutter_application/screens/edit_product_screen.dart';
 import 'package:provider/provider.dart';
 import '/providers/products_provider.dart';
 
@@ -14,6 +15,8 @@ class ProductGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('ProductGrid is called');
+
     final ProductsProvider productsProvider =
         Provider.of<ProductsProvider>(context);
     // view all or favorites items only based on the showFavorites boolean value
@@ -24,27 +27,29 @@ class ProductGrid extends StatelessWidget {
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GridView.builder(
-              // grid items dimensions
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 3 / 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              // grid items number
-              itemCount: providedProducts.length,
-              // repeat the returned widget for each item in the grid
-              itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-                // getting ProductProvider for each item in products list
-                value: providedProducts[i],
-                // widget shown inside each grid item
-                child: ProductItem(),
-              ),
-            ),
-          );
+        : providedProducts.isEmpty
+            ? AddNewProductsWidget(productsProvider)
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.builder(
+                  // grid items dimensions
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 3 / 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                  ),
+                  // grid items number
+                  itemCount: providedProducts.length,
+                  // repeat the returned widget for each item in the grid
+                  itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+                    // getting ProductProvider for each item in products list
+                    value: providedProducts[i],
+                    // widget shown inside each grid item
+                    child: ProductItem(),
+                  ),
+                ),
+              );
   }
 }
 
@@ -65,7 +70,11 @@ class _AddNewProductsWidgetState extends State<AddNewProductsWidget> {
     return Center(
       child: Column(
         children: [
-          ElevatedButton(onPressed: () {}, child: const Text('Add a product')),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(EditProductScreen.routeName);
+              },
+              child: const Text('Add a product')),
           ElevatedButton(
               onPressed: () {
                 setState(() {
