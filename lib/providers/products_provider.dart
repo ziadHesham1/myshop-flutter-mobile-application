@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import '/models/firebase_database_helper.dart';
 import 'dart:convert';
 // import '../models/app_http_exception.dart';
-import '../globals/global_variables.dart';
 import 'product_provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -59,8 +59,8 @@ class ProductsProvider with ChangeNotifier {
     };
 
     try {
-      final http.Response response = await http
-          .post(GlobalVariables.productsUrl, body: json.encode(newProductMap));
+      final http.Response response = await http.post(FirebaseHelper.productsUrl,
+          body: json.encode(newProductMap));
       // .then((response) {
       _products.add(ProductProvider(
           id: json.decode(response.body)['name'],
@@ -119,8 +119,7 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> fetchAndSetProducts() async {
     try {
-      final http.Response response =
-          await http.get(GlobalVariables.productsUrl);
+      final http.Response response = await http.get(FirebaseHelper.productsUrl);
       final Map<String, dynamic>? extractedData =
           json.decode(response.body) as Map<String, dynamic>?;
       if (extractedData != null) {
@@ -158,7 +157,7 @@ class ProductsProvider with ChangeNotifier {
     if (productIndex >= 0) {
       try {
         final productUrl =
-            Uri.parse('$GlobalVariables.url.url/products/$productId.json');
+            Uri.parse('$FirebaseHelper.url.url/products/$productId.json');
         Map<String, dynamic> newProductMap = {
           'title': title,
           'description': description,
@@ -200,7 +199,7 @@ class ProductsProvider with ChangeNotifier {
     notifyListeners();
 
     http.Response response =
-        await http.delete(GlobalVariables.productUrl(productId));
+        await http.delete(FirebaseHelper.productUrl(productId));
     // check if there's an error with deleting the product from the DB
     // it insert the product back to the product list and throw an error
     if (response.statusCode >= 400) {
@@ -225,7 +224,7 @@ class ProductsProvider with ChangeNotifier {
     // if there's an error and deleting it from the DB failed
     notifyListeners();
 
-    http.Response response = await http.delete(GlobalVariables.productsUrl);
+    http.Response response = await http.delete(FirebaseHelper.productsUrl);
     // check if there's an error with deleting the product from the DB
     // it insert the product back to the product list and throw an error
     if (response.statusCode >= 400) {
