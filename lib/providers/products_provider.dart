@@ -156,8 +156,6 @@ class ProductsProvider with ChangeNotifier {
         _products.indexWhere((product) => product.id == productId);
     if (productIndex >= 0) {
       try {
-        final productUrl =
-            Uri.parse('$FirebaseHelper.url.url/products/$productId.json');
         Map<String, dynamic> newProductMap = {
           'title': title,
           'description': description,
@@ -165,7 +163,7 @@ class ProductsProvider with ChangeNotifier {
           'imageUrl': imageUrl,
           'isFavorite': false,
         };
-        await http.patch(productUrl, body: json.encode(newProductMap));
+        await http.patch(FirebaseHelper.productUrl(productId), body: json.encode(newProductMap));
         print('the product $title should be updated on firebase');
         _products[productIndex] = ProductProvider(
           id: _products[productIndex].id,
@@ -177,7 +175,7 @@ class ProductsProvider with ChangeNotifier {
         );
         notifyListeners();
       } catch (error) {
-        print(error);
+        print('error in the updateProduct function $error');
         // rethrow;
       }
     } else {

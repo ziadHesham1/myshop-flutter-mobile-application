@@ -35,7 +35,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final FocusNode _descriptionFocusNode = FocusNode();
   final _imgFocusNode = FocusNode();
   final _imgController = TextEditingController(
-      text: 'https://www.shareicon.net/data/128x128/2015/05/20/41190_empty_256x256.png');
+      text:
+          'https://www.shareicon.net/data/128x128/2015/05/20/41190_empty_256x256.png');
 
   final _formKey = GlobalKey<FormState>();
   /* var _editedProduct =
@@ -114,20 +115,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
     setState(() => _isLoading = true);
     // updating an existing product
     if (_editedProduct.id.isNotEmpty) {
-      await productsProvider.updateProduct(
-          _editedProduct.id,
-          _editedProduct.title,
-          _editedProduct.description,
-          _editedProduct.price,
-          _editedProduct.imageUrl,
-          _editedProduct.isFavorite);
-    } else {
       try {
-        await productsProvider.addProduct(
+        await productsProvider.updateProduct(
+            _editedProduct.id,
             _editedProduct.title,
             _editedProduct.description,
             _editedProduct.price,
-            _editedProduct.imageUrl);
+            _editedProduct.imageUrl,
+            _editedProduct.isFavorite);
       } catch (error) {
         await showDialog<void>(
           context: context,
@@ -146,9 +141,38 @@ class _EditProductScreenState extends State<EditProductScreen> {
           },
         );
       }
+    } else {
+      try {
+        await productsProvider.addProduct(
+            _editedProduct.title,
+            _editedProduct.description,
+            _editedProduct.price,
+            _editedProduct.imageUrl);
+      } catch (error) {
+        await newMethod(error);
+      }
       setState(() => _isLoading = false);
       Navigator.pop(ctx);
     }
+  }
+
+  Future<void> newMethod(Object error) {
+    return showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('An error occurred!'),
+            content: Text(error.toString()),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Okay'))
+            ],
+          );
+        },
+      );
   }
 
   @override
