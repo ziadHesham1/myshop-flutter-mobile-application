@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class FirebaseHelper {
   static const url =
       'https://myshop-flutter-app-9477e-default-rtdb.firebaseio.com';
@@ -11,6 +13,8 @@ class FirebaseHelper {
   static Uri cartItemsUrl = Uri.parse('$url/cartItems.json');
 
   static Uri cartItemUrl(productId) {
-    return Uri.parse('$url/products/$productId.json');
+    return Uri.parse('$url/cartItems/$productId.json');
   }
+
+  
 }

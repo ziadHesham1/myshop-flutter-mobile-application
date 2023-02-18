@@ -140,8 +140,6 @@ class ProductsProvider with ChangeNotifier {
         notifyListeners();
       } else {
         print('Error in fetchAndSetProducts Fn: the extractedData = null');
-
-        _products = [];
       }
     } catch (error) {
       print(
@@ -163,7 +161,8 @@ class ProductsProvider with ChangeNotifier {
           'imageUrl': imageUrl,
           'isFavorite': false,
         };
-        await http.patch(FirebaseHelper.productUrl(productId), body: json.encode(newProductMap));
+        await http.patch(FirebaseHelper.productUrl(productId),
+            body: json.encode(newProductMap));
         print('the product $title should be updated on firebase');
         _products[productIndex] = ProductProvider(
           id: _products[productIndex].id,

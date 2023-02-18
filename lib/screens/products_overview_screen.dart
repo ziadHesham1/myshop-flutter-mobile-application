@@ -17,10 +17,11 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 bool errorAccrued = false;
 
+var _isInit = true;
+bool _isLoading = false;
+
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showFavoriteOnly = false;
-  var _isInit = true;
-  bool _isLoading = false;
 
   @override
   void didChangeDependencies() {
@@ -37,13 +38,22 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         setState(() => _isLoading = false);
       });
     }
+
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  var isCartFetched = false;
   @override
   Widget build(BuildContext context) {
-        print('ProductsOverviewScreen is called');
+    if (!isCartFetched) {
+      Provider.of<CartProvider>(context).fetchAndSetCartItems().catchError((e) {
+        print(
+            'fetchAndSetCartItems failed in the ProductsOverviewScreen didChangeDependencies');
+      });
+      isCartFetched = true;
+    }
+    print('ProductsOverviewScreen is called');
 
     final ProductsProvider productsProvider =
         Provider.of<ProductsProvider>(context);
@@ -112,38 +122,28 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       ),
       drawer: const MainDrawer(),
       body: errorAccrued
-          ? const ErrorWidget()
+          ? newMethod()
           : ProductGrid(_showFavoriteOnly, _isLoading),
     );
   }
-}
-
-class ErrorWidget extends StatefulWidget {
-  const ErrorWidget({
-    super.key,
-  });
-
-  @override
-  State<ErrorWidget> createState() => _ErrorWidgetState();
-}
-
-class _ErrorWidgetState extends State<ErrorWidget> {
-  @override
-  Widget build(BuildContext context) {
+ Center newMethod() {
     return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text('Error Accrued, check your internet connection'),
-        ElevatedButton(
-            onPressed: () { 
-              setState(() {
-                errorAccrued = false;
-
-              });
-            },
-            child: const Text('Try again'))
-      ],
-    ));
+      child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      const Text('Error Accrued, check your internet connection'),
+      ElevatedButton(
+          onPressed: () {
+            setState(() {
+              _isInit = true;
+              errorAccrued = false;
+            });
+          },
+          child: const Text('Try again'))
+    ],
+  ));
   }
+
 }
+
+
