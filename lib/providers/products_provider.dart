@@ -1,9 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import '/models/firebase_database_helper.dart';
-import 'dart:convert';
-// import '../models/app_http_exception.dart';
+import '../models/firebase_helper.dart';
 import 'product_provider.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ProductsProvider with ChangeNotifier {

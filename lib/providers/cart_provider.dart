@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:myshop_flutter_application/models/firebase_database_helper.dart';
+import 'package:myshop_flutter_application/models/firebase_helper.dart';
 
 class CartItemModel {
   final String id;
