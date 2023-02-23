@@ -4,7 +4,7 @@ import 'package:myshop_flutter_application/screens/edit_product_screen.dart';
 import 'package:provider/provider.dart';
 import '/providers/products_provider.dart';
 
-import '../widgets/product_item.dart';
+import 'product_item.dart';
 
 class ProductGrid extends StatelessWidget {
   final bool showFavorites;

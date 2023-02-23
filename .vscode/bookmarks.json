@@ -21,7 +21,7 @@
 			]
 		},
 		{
-			"path": "lib/screens/products_grid.dart",
+			"path": "lib/widgets/products_grid.dart",
 			"bookmarks": [
 				{
 					"line": 16,

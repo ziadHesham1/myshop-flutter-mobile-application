@@ -106,11 +106,11 @@ putIfAbsent(
         _cartItems = loadedData;
         notifyListeners();
       } else {
-        print('Error in fetchAndSetProducts Fn: the extractedData = null');
+        print('Hint from fetchAndSetCartItems Fn: the extractedData = null');
       }
     } catch (error) {
       print(
-          'Error catched in the fetchAndSetProducts function in the ProductsProvider ${error.toString()}');
+          'Error catched in the fetchAndSetCartItems function in the ProductsProvider ${error.toString()}');
       rethrow;
     }
   }
@@ -170,7 +170,7 @@ putIfAbsent(
             'in removeSingleItem Fn : product quantity couldn\'t be updated because there\'s no item with this product id : $productId ');
       }
     }
-    // DB and local is WORKING !!!!!!!!
+    // DB and local is WORKING
     else {
       print('removeItem says :removeSingleItem is calling me');
       removeItem(productId);

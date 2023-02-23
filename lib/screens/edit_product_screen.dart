@@ -124,22 +124,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             _editedProduct.imageUrl,
             _editedProduct.isFavorite);
       } catch (error) {
-        await showDialog<void>(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('An error occurred!'),
-              content: Text(error.toString()),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Okay'))
-              ],
-            );
-          },
-        );
+        await buildErrorDialog(error);
       }
     } else {
       try {
@@ -149,30 +134,30 @@ class _EditProductScreenState extends State<EditProductScreen> {
             _editedProduct.price,
             _editedProduct.imageUrl);
       } catch (error) {
-        await newMethod(error);
+        await buildErrorDialog(error);
       }
       setState(() => _isLoading = false);
       Navigator.pop(ctx);
     }
   }
 
-  Future<void> newMethod(Object error) {
+  Future<void> buildErrorDialog(Object error) {
     return showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('An error occurred!'),
-            content: Text(error.toString()),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Okay'))
-            ],
-          );
-        },
-      );
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('An error occurred!'),
+          content: Text(error.toString()),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Okay'))
+          ],
+        );
+      },
+    );
   }
 
   @override
