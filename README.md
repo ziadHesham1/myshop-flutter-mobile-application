@@ -1,16 +1,48 @@
-# myshop_flutter_application
+# Myshop Flutter Application
 
-A new Flutter project.
+Myshop is a fully-functional e-commerce mobile application built using Flutter and Firebase. It includes features such as user authentication, shopping cart functionality, and an order management system. 
+<!-- It also integrates with various payment gateways, including PayPal and Stripe. -->
 
-## Getting Started
+## Technologies Used
 
-This project is a starting point for a Flutter application.
+- Dart
+- Flutter
+- Provider package
+- Firebase
+<!-- - Stripe -->
+<!-- - PayPal -->
+<!-- - Cloud Firestore -->
 
-A few resources to get you started if this is your first Flutter project:
+## Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Add, edit, and delete products
+- User authentication
+- Shopping cart functionality
+- Order management system
+<!-- - Payment gateway integration -->
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation
+
+1. Clone the repository.
+2. Run `flutter pub get` to install dependencies.
+3. Add your Firebase project to the app.
+4. Run the app.
+
+## Usage
+
+- Sign up for an account or log in with an existing one.
+- Browse products and add them to your cart.
+- Checkout and pay with your preferred payment gateway.
+- Manage your orders in the app.
+
+## Screenshots
+
+![Home screen](screenshots/home.png)
+![Product details screen](screenshots/product-details.png)
+![Shopping cart screen](screenshots/shopping-cart.png)
+![Orders screen](screenshots/orders.png)
+<!-- 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+ -->
