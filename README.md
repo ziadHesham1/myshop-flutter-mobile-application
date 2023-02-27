@@ -34,13 +34,13 @@ Myshop is a fully-functional e-commerce mobile application built using Flutter a
 - Browse products and add them to your cart.
 - Checkout and pay with your preferred payment gateway.
 - Manage your orders in the app.
-
+<!-- 
 ## Screenshots
 
 ![Home screen](screenshots/home.png)
 ![Product details screen](screenshots/product-details.png)
 ![Shopping cart screen](screenshots/shopping-cart.png)
-![Orders screen](screenshots/orders.png)
+![Orders screen](screenshots/orders.png) -->
 <!-- 
 ## License
 
