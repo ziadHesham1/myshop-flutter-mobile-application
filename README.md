@@ -22,11 +22,12 @@ Myshop is a fully-functional e-commerce mobile application built using Flutter a
 <!-- - Payment gateway integration -->
 
 ## Installation
+1. Clone the repository to your local machine.
+2. Open the project in your preferred IDE.
+3. Run `flutter pub get` to install the required dependencies.
+4. Create a new project on Firebase and add the necessary configuration files to the project.
+5. Run the application on an emulator or physical device.
 
-1. Clone the repository.
-2. Run `flutter pub get` to install dependencies.
-3. Add your Firebase project to the app.
-4. Run the app.
 
 ## Usage
 
