@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:myshop_flutter_application/models/firebase_helper.dart';
+import 'package:myshop_flutter_application/models/firebase_db_helper.dart';
 
 class CartItemModel {
   final String id;
@@ -56,14 +56,14 @@ putIfAbsent(
         );
       });
       // change quantity in DB
-      await http.patch(FirebaseHelper.cartItemUrl(existingItemId),
+      await http.patch(FirebaseDBHelper.cartItemUrl(existingItemId),
           body: json.encode({
             'quantity': existingItemQuantity + 1,
           }));
     } else {
       //response
 
-      final response = await http.post(FirebaseHelper.cartItemsUrl,
+      final response = await http.post(FirebaseDBHelper.cartItemsUrl,
           body: json.encode({
             'productId': productId,
             'title': title,
@@ -86,7 +86,7 @@ putIfAbsent(
   Future<void> fetchAndSetCartItems() async {
     try {
       final http.Response response =
-          await http.get(FirebaseHelper.cartItemsUrl);
+          await http.get(FirebaseDBHelper.cartItemsUrl);
       final Map<String, dynamic>? extractedData =
           json.decode(response.body) as Map<String, dynamic>?;
       if (extractedData != null) {
@@ -125,7 +125,7 @@ putIfAbsent(
       // remove that item from the DB
       if (deletedItem != null) {
         http.Response response =
-            await http.delete(FirebaseHelper.cartItemUrl(deletedItem.id));
+            await http.delete(FirebaseDBHelper.cartItemUrl(deletedItem.id));
         print('trying to delete product with id responseId from cart in DB');
         // check if there's an error return the product back in cart
         if (response.statusCode >= 400) {
@@ -162,7 +162,7 @@ putIfAbsent(
       });
       var existingItem = _cartItems[productId];
       if (existingItem != null) {
-        var url = FirebaseHelper.cartItemUrl(existingItem.id);
+        var url = FirebaseDBHelper.cartItemUrl(existingItem.id);
         http.patch(url, body: json.encode({'quantity': existingItem.quantity}));
         notifyListeners();
       } else {
@@ -184,7 +184,7 @@ putIfAbsent(
       _cartItems = {};
       notifyListeners();
 
-      http.Response response = await http.delete(FirebaseHelper.cartItemsUrl);
+      http.Response response = await http.delete(FirebaseDBHelper.cartItemsUrl);
       if (response.statusCode >= 400) {
         _cartItems = existingCartItems;
         notifyListeners();

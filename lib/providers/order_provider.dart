@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myshop_flutter_application/providers/cart_provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/firebase_helper.dart';
+import '../models/firebase_db_helper.dart';
 
 class OrderModel {
   final String id;
@@ -59,7 +59,7 @@ class OrdersProvider with ChangeNotifier {
                 })
             .toList(),
       };
-      var response = await http.post(FirebaseHelper.ordersUrl,
+      var response = await http.post(FirebaseDBHelper.ordersUrl,
           body: json.encode(orderMap));
 
       _orders.insert(
@@ -81,27 +81,28 @@ class OrdersProvider with ChangeNotifier {
 
   Future<void> fetchAndSetOrders() async {
     try {
-      var response = await http.get(FirebaseHelper.ordersUrl);
+      var response = await http.get(FirebaseDBHelper.ordersUrl);
       Map<String, dynamic> extractedData =
           json.decode(response.body) as Map<String, dynamic>;
       List<OrderModel> loadedData = [];
       extractedData.forEach((key, value) {
-                  print('Order with total amount ${value['amount']} is fetched from the database');
+        print(
+            'Order with total amount ${value['amount']} is fetched from the database');
 
         loadedData.add(
           OrderModel(
               id: key,
               amount: value['amount'],
               dateTime: DateTime.parse(value['dateTime']),
-              cartProducts: (value['cartProducts'] as List<dynamic> )
-            .map(
-              (item) => CartItemModel(
-                  id: item['id'],
-                  title: item['title'],
-                  price: item['price'],
-                  quantity: item['quantity']),
-            )
-            .toList() ),
+              cartProducts: (value['cartProducts'] as List<dynamic>)
+                  .map(
+                    (item) => CartItemModel(
+                        id: item['id'],
+                        title: item['title'],
+                        price: item['price'],
+                        quantity: item['quantity']),
+                  )
+                  .toList()),
         );
       });
       _orders = loadedData;

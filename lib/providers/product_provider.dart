@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:myshop_flutter_application/models/firebase_helper.dart';
+import 'package:myshop_flutter_application/models/firebase_db_helper.dart';
 
 class ProductProvider with ChangeNotifier {
   final String id;
@@ -33,7 +33,7 @@ class ProductProvider with ChangeNotifier {
 
     // update the new favorite status in the DB
     try {
-      final response = await http.patch(FirebaseHelper.productUrl(id),
+      final response = await http.patch(FirebaseDBHelper.productUrl(id),
           body: json.encode({'isFavorite': isFavorite}));
       if (response.statusCode >= 400) {
         _setFavValue(oldStatus);
