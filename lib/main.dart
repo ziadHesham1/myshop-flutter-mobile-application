@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myshop_flutter_application/providers/auth_provider.dart';
 import '../screens/auth_screen.dart';
 import '../screens/edit_product_screen.dart';
 import '../providers/order_provider.dart';
@@ -17,6 +18,7 @@ void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -30,24 +32,37 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => OrdersProvider(),
         ),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Material App',
-        theme: ThemeData(
-            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
-                .copyWith(secondary: Colors.deepOrange),
-            fontFamily: 'Lato'),
-        routes: {
-          // '/': (context) => const ProductsOverviewScreen(),
-          '/': (context) => const AuthScreen(),
-          OrdersScreen.routeName: (context) => const OrdersScreen(),
-          ProductDetailsScreen.routeName: (context) =>
-              const ProductDetailsScreen(),
-          CartScreen.routeName: (context) => const CartScreen(),
-          UserProductsScreen.routeName: (context) => const UserProductsScreen(),
-          EditProductScreen.routeName: (context) => const EditProductScreen(),
-          AuthScreen.routeName: (context) => const AuthScreen(),
+      child: Consumer<AuthProvider>(
+        builder: (context, value, _) {
+          print('myApp build is called');
+
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Material App',
+            theme: ThemeData(
+                colorScheme:
+                    ColorScheme.fromSwatch(primarySwatch: Colors.purple)
+                        .copyWith(secondary: Colors.deepOrange),
+                fontFamily: 'Lato'),
+            home: AuthProvider.emailExist
+                ? const ProductsOverviewScreen()
+                : const AuthScreen(),
+            routes: {
+              // '/': (context) => const ProductsOverviewScreen(),
+              // '/': (context) => const AuthScreen(),
+              OrdersScreen.routeName: (context) => const OrdersScreen(),
+              ProductDetailsScreen.routeName: (context) =>
+                  const ProductDetailsScreen(),
+              CartScreen.routeName: (context) => const CartScreen(),
+              UserProductsScreen.routeName: (context) =>
+                  const UserProductsScreen(),
+              EditProductScreen.routeName: (context) =>
+                  const EditProductScreen(),
+              AuthScreen.routeName: (context) => const AuthScreen(),
+            },
+          );
         },
       ),
     );

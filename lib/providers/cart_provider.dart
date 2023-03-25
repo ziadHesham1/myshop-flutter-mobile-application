@@ -9,6 +9,7 @@ class CartItemModel {
   final String title;
   final double price;
   final int quantity;
+
   CartItemModel({
     required this.id,
     required this.title,
@@ -19,7 +20,8 @@ class CartItemModel {
 
 class CartProvider with ChangeNotifier {
   Map<String, CartItemModel> _cartItems = {};
-/* 
+
+/*
 *which id is which!!! : 
 *product id
   is the key in the map and the productId in the DB map
@@ -90,21 +92,25 @@ putIfAbsent(
       final Map<String, dynamic>? extractedData =
           json.decode(response.body) as Map<String, dynamic>?;
       if (extractedData != null) {
-        Map<String, CartItemModel> loadedData = {};
-        extractedData.forEach((key, value) {
-          print('Product : ${value['title']} is fetched from the database');
-          loadedData.putIfAbsent(
-            value['productId'],
-            () => CartItemModel(
-              id: key,
-              title: value['title'],
-              price: value['price'],
-              quantity: value['quantity'],
-            ),
-          );
-        });
-        _cartItems = loadedData;
-        notifyListeners();
+        if (!extractedData.containsKey('error')) {
+          Map<String, CartItemModel> loadedData = {};
+          extractedData.forEach((key, value) {
+            print('Product : ${value['title']} is fetched from the database');
+            loadedData.putIfAbsent(
+              value['productId'],
+              () => CartItemModel(
+                id: key,
+                title: value['title'],
+                price: value['price'],
+                quantity: value['quantity'],
+              ),
+            );
+          });
+          _cartItems = loadedData;
+          notifyListeners();
+        } else {
+          print('Error in fetchAndSetCartItems Fn: ${extractedData['error']}');
+        }
       } else {
         print('Hint from fetchAndSetCartItems Fn: the extractedData = null');
       }

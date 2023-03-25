@@ -123,21 +123,25 @@ class ProductsProvider with ChangeNotifier {
       final Map<String, dynamic>? extractedData =
           json.decode(response.body) as Map<String, dynamic>?;
       if (extractedData != null) {
-        List<ProductProvider> loadedData = [];
-        extractedData.forEach((key, value) {
-          print('Product : ${value['title']} is fetched from the database');
-          loadedData.add(
-            ProductProvider(
-                id: key,
-                title: value['title'],
-                description: value['description'],
-                price: value['price'],
-                imageUrl: value['imageUrl'],
-                isFavorite: value['isFavorite']),
-          );
-        });
-        _products = loadedData;
-        notifyListeners();
+        if (!extractedData.containsKey('error')) {
+          List<ProductProvider> loadedData = [];
+          extractedData.forEach((key, value) {
+            print('Product : ${value['title']} is fetched from the database');
+            loadedData.add(
+              ProductProvider(
+                  id: key,
+                  title: value['title'],
+                  description: value['description'],
+                  price: value['price'],
+                  imageUrl: value['imageUrl'],
+                  isFavorite: value['isFavorite']),
+            );
+          });
+          _products = loadedData;
+          notifyListeners();
+        } else {
+          print('Error in fetchAndSetProducts Fn: ${extractedData['error']}');
+        }
       } else {
         print('Error in fetchAndSetProducts Fn: the extractedData = null');
       }

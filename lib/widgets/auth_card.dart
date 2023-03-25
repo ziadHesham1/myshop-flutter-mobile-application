@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myshop_flutter_application/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
-enum AuthMode { signup, login }
+enum AuthMode { signup, signin }
 
 class AuthCard extends StatefulWidget {
   const AuthCard({super.key});
@@ -11,15 +13,16 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  AuthMode _authMode = AuthMode.login;
+  AuthMode _authMode = AuthMode.signin;
   final Map<String, String> _authData = {
     'email': '',
     'password': '',
   };
   var _isLoading = false;
-  final _passwordController = TextEditingController();
+  final _passwordController = TextEditingController(text: 'zead1111');
+
   // the function that will be called when the user ends adding his inputs
-  void _submit() {
+  Future<void> _submit() async {
     /// if the validation fails it return and get out of the function
     ///to make the user fix the errors and submit again
     if (!_formKey.currentState!.validate()) {
@@ -30,22 +33,26 @@ class _AuthCardState extends State<AuthCard> {
     _formKey.currentState!.save();
     // set _isLoading to true to start loading spinner
     setState(() => _isLoading = true);
-    // login or signup
-    if (_authMode == AuthMode.login) {
-      // Log user in
+    // signin or signup
+    AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
+    if (_authMode == AuthMode.signin) {
+      // sign user in
+      await authProvider.signIn(_authData['email']!, _authData['password']!);
     } else {
       // Sign user up
+      await authProvider.signUp(_authData['email']!, _authData['password']!);
     }
     // set _isLoading to false to stop loading spinner and view content
     setState(() => _isLoading = false);
   }
 
-  // switch between login and signup based on the _authMode value
+  // switch between signin and signup based on the _authMode value
   void _switchAuthMode() {
-    if (_authMode == AuthMode.login) {
+    if (_authMode == AuthMode.signin) {
       setState(() => _authMode = AuthMode.signup);
     } else {
-      setState(() => _authMode = AuthMode.login);
+      setState(() => _authMode = AuthMode.signin);
     }
   }
 
@@ -88,9 +95,9 @@ class _AuthCardState extends State<AuthCard> {
     );
   }
 
- 
   TextFormField signupField() {
     return TextFormField(
+      initialValue: 'zead1111',
       enabled: _authMode == AuthMode.signup,
       decoration: const InputDecoration(labelText: 'Confirm Password'),
       obscureText: true,
@@ -124,6 +131,7 @@ class _AuthCardState extends State<AuthCard> {
 
   TextFormField emailField() {
     return TextFormField(
+      initialValue: 'ziad@mail.com',
       decoration: const InputDecoration(labelText: 'E-Mail'),
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
@@ -137,10 +145,11 @@ class _AuthCardState extends State<AuthCard> {
       },
     );
   }
-   ElevatedButton primaryActionButton() {
+
+  ElevatedButton primaryActionButton() {
     return ElevatedButton(
       onPressed: _submit,
-      child: Text(_authMode == AuthMode.login ? 'LOGIN' : 'SIGN UP'),
+      child: Text(_authMode == AuthMode.signin ? 'SIGN IN' : 'SIGN UP'),
       /*  shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ), */
@@ -155,11 +164,10 @@ class _AuthCardState extends State<AuthCard> {
     return TextButton(
       onPressed: _switchAuthMode,
       child:
-          Text('${_authMode == AuthMode.login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+          Text('${_authMode == AuthMode.signin ? 'SIGNUP' : 'signIN'} INSTEAD'),
       /* padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     textColor: Theme.of(context).primaryColor, */
     );
   }
-
 }
