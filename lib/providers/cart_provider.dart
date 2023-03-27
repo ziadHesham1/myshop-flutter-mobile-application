@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -19,6 +21,12 @@ class CartItemModel {
 }
 
 class CartProvider with ChangeNotifier {
+  String authToken = '';
+  CartProvider.empty();
+  CartProvider(this.authToken, this._cartItems) {
+    print('CartProvider is called');
+  }
+
   Map<String, CartItemModel> _cartItems = {};
 
 /*
@@ -39,6 +47,7 @@ putIfAbsent(
             ),
 
 */
+
   Map<String, CartItemModel> get cartItems => {..._cartItems};
 
   Future<void> addCartItem(String productId, String title, double price) async {
@@ -58,14 +67,14 @@ putIfAbsent(
         );
       });
       // change quantity in DB
-      await http.patch(FirebaseDBHelper.cartItemUrl(existingItemId),
+      await http.patch(FirebaseDBHelper.cartItemUrl(existingItemId, authToken),
           body: json.encode({
             'quantity': existingItemQuantity + 1,
           }));
     } else {
       //response
 
-      final response = await http.post(FirebaseDBHelper.cartItemsUrl,
+      final response = await http.post(FirebaseDBHelper.cartItemsUrl(authToken),
           body: json.encode({
             'productId': productId,
             'title': title,
@@ -88,7 +97,7 @@ putIfAbsent(
   Future<void> fetchAndSetCartItems() async {
     try {
       final http.Response response =
-          await http.get(FirebaseDBHelper.cartItemsUrl);
+          await http.get(FirebaseDBHelper.cartItemsUrl(authToken));
       final Map<String, dynamic>? extractedData =
           json.decode(response.body) as Map<String, dynamic>?;
       if (extractedData != null) {
@@ -109,15 +118,20 @@ putIfAbsent(
           _cartItems = loadedData;
           notifyListeners();
         } else {
-          print('Error in fetchAndSetCartItems Fn: ${extractedData['error']}');
+          String errorMessage =
+              'Error in fetchAndSetCartItems Fn: ${extractedData['error']}';
+          throw HttpException(errorMessage);
         }
       } else {
-        print('Hint from fetchAndSetCartItems Fn: the extractedData = null');
+        String hintMessage =
+            'Hint from fetchAndSetCartItems Fn: the extractedData = null';
+        print(hintMessage);
+        // throw HttpException(errorMessage);
       }
     } catch (error) {
-      print(
-          'Error catched in the fetchAndSetCartItems function in the ProductsProvider ${error.toString()}');
-      rethrow;
+      String errorMessage =
+          'Error caught in the fetchAndSetCartItems function in the CartProvider : ${error.toString()}';
+      throw HttpException(errorMessage);
     }
   }
 
@@ -130,8 +144,8 @@ putIfAbsent(
       notifyListeners();
       // remove that item from the DB
       if (deletedItem != null) {
-        http.Response response =
-            await http.delete(FirebaseDBHelper.cartItemUrl(deletedItem.id));
+        http.Response response = await http
+            .delete(FirebaseDBHelper.cartItemUrl(deletedItem.id, authToken));
         print('trying to delete product with id responseId from cart in DB');
         // check if there's an error return the product back in cart
         if (response.statusCode >= 400) {
@@ -168,7 +182,7 @@ putIfAbsent(
       });
       var existingItem = _cartItems[productId];
       if (existingItem != null) {
-        var url = FirebaseDBHelper.cartItemUrl(existingItem.id);
+        var url = FirebaseDBHelper.cartItemUrl(existingItem.id, authToken);
         http.patch(url, body: json.encode({'quantity': existingItem.quantity}));
         notifyListeners();
       } else {
@@ -190,7 +204,8 @@ putIfAbsent(
       _cartItems = {};
       notifyListeners();
 
-      http.Response response = await http.delete(FirebaseDBHelper.cartItemsUrl);
+      http.Response response =
+          await http.delete(FirebaseDBHelper.cartItemsUrl(authToken));
       if (response.statusCode >= 400) {
         _cartItems = existingCartItems;
         notifyListeners();

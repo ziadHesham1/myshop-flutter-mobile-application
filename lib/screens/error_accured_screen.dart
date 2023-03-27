@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ErrorAccruedScreen extends StatelessWidget {
-  final Function() tryAgainFunction;
+  final String errorMessage;
   const ErrorAccruedScreen({
-    required this.tryAgainFunction,
+    required this.errorMessage,
     super.key,
   });
 
@@ -13,9 +13,9 @@ class ErrorAccruedScreen extends StatelessWidget {
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text('Error Accrued, check your internet connection'),
+         Text(errorMessage),
         ElevatedButton(
-          onPressed: tryAgainFunction,
+          onPressed: (){},
           child: const Text('Try again'),
         )
       ],

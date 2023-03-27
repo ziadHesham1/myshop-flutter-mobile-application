@@ -23,19 +23,39 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => ProductsProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => CartProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => OrdersProvider(),
-        ),
         ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, ProductsProvider>(
+          create: (context) => ProductsProvider.empty(),
+          update: (BuildContext context, value,
+                  ProductsProvider? previousProductsProvider) =>
+              ProductsProvider(
+            value.token ?? '',
+            previousProductsProvider == null
+                ? []
+                : previousProductsProvider.productItems,
+          ),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, CartProvider>(
+          create: (context) => CartProvider.empty(),
+          update: (BuildContext context, value,
+                  CartProvider? previousCartProvider) =>
+              CartProvider(
+            value.token ?? '',
+            previousCartProvider == null ? {} : previousCartProvider.cartItems,
+          ),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, OrdersProvider>(
+          create: (context) => OrdersProvider.empty(),
+          update: (BuildContext context, value,
+                  OrdersProvider? previousCartProvider) =>
+              OrdersProvider(
+            value.token ?? '',
+            previousCartProvider == null ? [] : previousCartProvider.orders,
+          ),
+        ),
       ],
       child: Consumer<AuthProvider>(
-        builder: (context, value, _) {
+        builder: (context, authProvider, _) {
           print('myApp build is called');
 
           return MaterialApp(
@@ -46,7 +66,7 @@ class MyApp extends StatelessWidget {
                     ColorScheme.fromSwatch(primarySwatch: Colors.purple)
                         .copyWith(secondary: Colors.deepOrange),
                 fontFamily: 'Lato'),
-            home: AuthProvider.emailExist
+            home: authProvider.isAuth
                 ? const ProductsOverviewScreen()
                 : const AuthScreen(),
             routes: {

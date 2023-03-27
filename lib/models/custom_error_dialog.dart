@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomErrorDialog {
- static Future<void> buildErrorDialog(context, Object error) {
+  static Future<void> errorDialog(context, Object error) {
     return showDialog<void>(
       context: context,
       builder: (context) {
@@ -10,9 +10,7 @@ class CustomErrorDialog {
           content: Text(error.toString()),
           actions: [
             TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Okay'))
           ],
         );

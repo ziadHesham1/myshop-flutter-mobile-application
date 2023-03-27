@@ -20,7 +20,13 @@ class OrderModel {
 
 class OrdersProvider with ChangeNotifier {
   // ignore: prefer_final_fields
+  String authToken = '';
+  OrdersProvider.empty();
+  OrdersProvider(this.authToken, this._orders) {
+    debugPrint('CartProvider is called');
+  }
   List<OrderModel> _orders = [];
+
   List<OrderModel> get orders => [..._orders];
   static List<Map<String, dynamic>> dummyExtractedListInMap = [
     {
@@ -59,7 +65,7 @@ class OrdersProvider with ChangeNotifier {
                 })
             .toList(),
       };
-      var response = await http.post(FirebaseDBHelper.ordersUrl,
+      var response = await http.post(FirebaseDBHelper.ordersUrl(authToken),
           body: json.encode(orderMap));
 
       _orders.insert(
@@ -81,7 +87,7 @@ class OrdersProvider with ChangeNotifier {
 
   Future<void> fetchAndSetOrders() async {
     try {
-      var response = await http.get(FirebaseDBHelper.ordersUrl);
+      var response = await http.get(FirebaseDBHelper.ordersUrl(authToken));
       Map<String, dynamic> extractedData =
           json.decode(response.body) as Map<String, dynamic>;
       List<OrderModel> loadedData = [];

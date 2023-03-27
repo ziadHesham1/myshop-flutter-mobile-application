@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myshop_flutter_application/models/custom_error_dialog.dart';
 import 'package:myshop_flutter_application/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +21,22 @@ class _AuthCardState extends State<AuthCard> {
   };
   var _isLoading = false;
   final _passwordController = TextEditingController(text: 'zead1111');
+  Future<void> errorDialog(context, Object error) {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('An error occurred!'),
+          content: Text(error.toString()),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Okay'))
+          ],
+        );
+      },
+    );
+  }
 
   // the function that will be called when the user ends adding his inputs
   Future<void> _submit() async {
@@ -38,10 +55,18 @@ class _AuthCardState extends State<AuthCard> {
         Provider.of<AuthProvider>(context, listen: false);
     if (_authMode == AuthMode.signin) {
       // sign user in
-      await authProvider.signIn(_authData['email']!, _authData['password']!);
+      try {
+        await authProvider.signIn(_authData['email']!, _authData['password']!);
+      } catch (e) {
+        errorDialog(context, e);
+      }
     } else {
       // Sign user up
-      await authProvider.signUp(_authData['email']!, _authData['password']!);
+      try {
+        await authProvider.signUp(_authData['email']!, _authData['password']!);
+      } catch (e) {
+        errorDialog(context, e);
+      }
     }
     // set _isLoading to false to stop loading spinner and view content
     setState(() => _isLoading = false);

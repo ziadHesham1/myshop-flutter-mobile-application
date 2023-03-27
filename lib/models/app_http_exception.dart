@@ -1,4 +1,3 @@
-/* import 'package:flutter/material.dart';
 
 class AppHttpException implements Exception {
   final String message;
@@ -10,4 +9,3 @@ class AppHttpException implements Exception {
     // return super.toString();
   }
 }
- */

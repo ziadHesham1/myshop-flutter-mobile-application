@@ -56,32 +56,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               },
               icon: const Icon(Icons.more_vert),
             ),
-            // cart icon button
 
-            /*  Consumer<CartProvider>(
-              builder: (_, CartProvider providedCart, Widget? ch) => AppBadge(
-                value: providedCart.itemsCount().toString(),
-                child: ch as Widget,
-              ),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
-                },
-                icon: const Icon(Icons.local_grocery_store),
-              ),
-            ), */
             FutureBuilder(
               future: Provider.of<CartProvider>(context, listen: false)
-                  .fetchAndSetCartItems()
-
-              /*  if (!isCartFetched) {
-      Provider.of<CartProvider>(context,listen:false).fetchAndSetCartItems().catchError((e) {
-        print(
-            'fetchAndSetCartItems failed in the ProductsOverviewScreen didChangeDependencies');
-      });
-      isCartFetched = true;
-    } */
-              ,
+                  .fetchAndSetCartItems(),
               builder: (context, snapshot) {
                 bool isWaiting =
                     snapshot.connectionState == ConnectionState.waiting;
@@ -113,14 +91,15 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return ErrorAccruedScreen(tryAgainFunction: () {});
+              return ErrorAccruedScreen(
+                  errorMessage:
+                      (snapshot.error).toString().contains('Permission denied')
+                          ? 'Permission denied'
+                          : 'error accrued');
             } else {
               return ProductGrid(_showFavoriteOnly, _isLoading);
             }
           },
         ));
   }
-/*  errorAccrued
-          ? ErrorAccruedScreen(tryAgainFunction: () => null)
-          : , */
 }

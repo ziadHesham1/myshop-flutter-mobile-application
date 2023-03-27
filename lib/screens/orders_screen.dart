@@ -28,12 +28,7 @@ class OrdersScreen extends StatelessWidget {
           } else if (snapshot.hasError) {
             print(
                 'Error in fetchAndSetOrders FutureBuilder says : ${snapshot.error}');
-            return ErrorAccruedScreen(
-                /* tryAgainFunction: () {
-              Provider.of<OrdersProvider>(context, listen: false)
-                  .fetchAndSetOrders();
-            } */
-                tryAgainFunction: () => null);
+            return const ErrorAccruedScreen(errorMessage: 'error accrued');
           } else {
             return Consumer<OrdersProvider>(
               builder: (context, providedOrders, child) => body(providedOrders),
