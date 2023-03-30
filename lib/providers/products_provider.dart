@@ -10,8 +10,9 @@ import 'package:http/http.dart' as http;
 class ProductsProvider with ChangeNotifier {
   // i can't make token final because this error
   String authToken = '';
+  String userId = '';
   ProductsProvider.empty();
-  ProductsProvider(this.authToken, this._products) {
+  ProductsProvider(this.userId, this.authToken, this._products) {
     print('ProductsProvider is called');
   }
 
@@ -59,21 +60,24 @@ class ProductsProvider with ChangeNotifier {
       'description': description,
       'price': price,
       'imageUrl': imageUrl,
-      'isFavorite': false,
       'authToken': authToken,
+      // 'userId': userId,
+      'creatorId': userId
     };
 
     try {
       final http.Response response = await http.post(
           FirebaseDBHelper.productsUrl(authToken),
           body: json.encode(newProductMap));
-      // .then((response) {
       _products.add(ProductProvider(
-          id: json.decode(response.body)['name'],
-          title: title,
-          description: description,
-          price: price,
-          imageUrl: imageUrl));
+        id: json.decode(response.body)['name'],
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl,
+        authToken: authToken,
+        userId: userId,
+      ));
       notifyListeners();
     } catch (error) {
       print(error);
@@ -123,25 +127,35 @@ class ProductsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchAndSetProducts() async {
+  Future<void> fetchAndSetProducts({bool filterByUser = false}) async {
     try {
-      final http.Response response =
-          await http.get(FirebaseDBHelper.productsUrl(authToken));
+      final http.Response response = await http.get(filterByUser
+          ? FirebaseDBHelper.productsUrl(authToken, creatorId: userId)
+          : FirebaseDBHelper.productsUrl(authToken));
+
+      final http.Response favoriteResponse = await http.get(
+          FirebaseDBHelper.userFavoritesUrl(token: authToken, userId: userId));
+
       final Map<String, dynamic>? extractedData =
           json.decode(response.body) as Map<String, dynamic>?;
+      final Map<String, dynamic>? favoritesData =
+          json.decode(favoriteResponse.body);
       if (extractedData != null) {
         if (!extractedData.containsKey('error')) {
           List<ProductProvider> loadedData = [];
-          extractedData.forEach((key, values) {
-            print('Product : ${values['title']} is fetched from the database');
+          extractedData.forEach((key, value) {
+            debugPrint(
+                'Product : ${value['title']} is fetched from the database');
             loadedData.add(ProductProvider(
               id: key,
-              title: values['title'],
-              description: values['description'],
-              price: values['price'],
-              imageUrl: values['imageUrl'],
-              isFavorite: values['isFavorite'],
-              authToken: values['authToken'],
+              title: value['title'],
+              description: value['description'],
+              price: value['price'],
+              imageUrl: value['imageUrl'],
+              isFavorite:
+                  favoritesData == null ? false : favoritesData[key] ?? false,
+              authToken: value['authToken'],
+              userId: userId,
             ));
           });
           _products = loadedData;
@@ -150,19 +164,19 @@ class ProductsProvider with ChangeNotifier {
           var errorMessage =
               'Error in fetchAndSetProducts Fn: ${extractedData['error']}';
           print(errorMessage);
-          throw HttpException(errorMessage);
+          throw (errorMessage);
         }
       } else {
         var errorMessage =
             'Error in fetchAndSetProducts Fn: the extractedData = null';
         print(errorMessage);
-        // throw HttpException(errorMessage);
+        // throw (errorMessage);
       }
     } catch (error) {
       var errorMessage =
           'Error caught in the fetchAndSetProducts function in the ProductsProvider ${error.toString()}';
       print(errorMessage);
-      throw HttpException(errorMessage);
+      throw (errorMessage);
     }
   }
 
@@ -181,7 +195,7 @@ class ProductsProvider with ChangeNotifier {
         };
         await http.patch(FirebaseDBHelper.productUrl(productId, authToken),
             body: json.encode(newProductMap));
-        print('the product $title should be updated on firebase');
+        debugPrint('the product $title should be updated on firebase');
         _products[productIndex] = ProductProvider(
           id: _products[productIndex].id,
           title: title,
@@ -193,7 +207,7 @@ class ProductsProvider with ChangeNotifier {
         notifyListeners();
       } catch (error) {
         print('error in the updateProduct function $error');
-        // rethrow;
+        rethrow;
       }
     } else {
       print('update failed!! Product not found');
@@ -220,7 +234,7 @@ class ProductsProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       _products.insert(productIndex, existingProduct);
       notifyListeners();
-      // throw AppHttpException('Couldn\'t delete product');
+      throw ('Couldn\'t delete product');
     }
     //
     existingProduct = null;
@@ -246,7 +260,7 @@ class ProductsProvider with ChangeNotifier {
     if (response.statusCode >= 400) {
       _products = existingProduct;
       notifyListeners();
-      // throw AppHttpException('Couldn\'t delete product');
+      throw ('Couldn\'t delete product');
     }
     //
     existingProduct = [];

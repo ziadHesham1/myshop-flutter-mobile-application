@@ -12,6 +12,7 @@ class ProductProvider with ChangeNotifier {
   final String imageUrl;
   bool isFavorite;
   String authToken = '';
+  String userId = '';
 
   ProductProvider({
     required this.id,
@@ -21,6 +22,7 @@ class ProductProvider with ChangeNotifier {
     required this.imageUrl,
     this.isFavorite = false,
     this.authToken = '',
+    this.userId = '',
   });
 
   void _setFavValue(newValue) {
@@ -32,13 +34,13 @@ class ProductProvider with ChangeNotifier {
     // toggle locally
     var oldStatus = isFavorite;
     _setFavValue(!isFavorite);
-    notifyListeners();
 
     // update the new favorite status in the DB
     try {
-      final response = await http.patch(
-          FirebaseDBHelper.productUrl(id, authToken),
-          body: json.encode({'isFavorite': isFavorite}));
+      final response = await http.put(
+          FirebaseDBHelper.userFavoritesUrl(
+              token: authToken, userId: userId, productId: id),
+          body: json.encode(isFavorite));
       if (response.statusCode >= 400) {
         _setFavValue(oldStatus);
         throw ('There\'s an error in the toggleFavoriteStatus Function');

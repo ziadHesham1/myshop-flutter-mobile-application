@@ -23,6 +23,7 @@ class AuthProvider with ChangeNotifier {
     return null;
   }
 
+  String? get userId => _userId;
   Future<http.Response> _authenticate(
       String email, String password, String urlSegment) async {
     const String apiKey = 'AIzaSyBBLYo3hlo02dMWPx0LNGbGCmEQEjoiQ1Y';

@@ -136,9 +136,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       } catch (error) {
         await buildErrorDialog(error);
       }
-      setState(() => _isLoading = false);
-      Navigator.pop(ctx);
     }
+    setState(() => _isLoading = false);
+      Navigator.pop(ctx);
   }
 
   Future<void> buildErrorDialog(Object error) {

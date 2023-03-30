@@ -3,24 +3,18 @@ import 'package:provider/provider.dart';
 
 import '../providers/products_provider.dart';
 import '../screens/edit_product_screen.dart';
+import '../screens/error_accured_screen.dart';
 import '../screens/user_product_item.dart';
 import 'main_drawer.dart';
 
-class UserProductsScreen extends StatefulWidget {
+class UserProductsScreen extends StatelessWidget {
   static const routeName = '/user_products_screen';
   const UserProductsScreen({super.key});
 
   @override
-  State<UserProductsScreen> createState() => _UserProductsScreenState();
-}
-
-class _UserProductsScreenState extends State<UserProductsScreen> {
-  @override
   Widget build(BuildContext context) {
     print('User Products Screen build called');
-    var productsProvider = Provider.of<ProductsProvider>(context);
 
-    var productItems = productsProvider.productItems;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Products'),
@@ -33,7 +27,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
           ),
           IconButton(
             onPressed: () {
-              productsProvider.addProduct(
+              Provider.of<ProductsProvider>(context,listen: false).addProduct(
                 'New Product',
                 'this is an empty product',
                 1000,
@@ -45,19 +39,39 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
         ],
       ),
       drawer: const MainDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await productsProvider.fetchAndSetProducts();
-
-          // await productsProvider.fetchAndSetProducts();
+      body: FutureBuilder(
+        future: refreshProducts(context),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          bool isWaiting = snapshot.connectionState == ConnectionState.waiting;
+          bool errorAccrued = snapshot.hasError;
+          if (isWaiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (errorAccrued) {
+            debugPrint(
+                'Error in fetchAndSetOrders FutureBuilder says : ${snapshot.error}');
+            return const ErrorAccruedScreen(errorMessage: 'error accrued');
+          } else {
+            return RefreshIndicator(
+              onRefresh: () => refreshProducts(context),
+              child: Consumer<ProductsProvider>(
+                builder:
+                    (BuildContext context, productsProvider, Widget? child) =>
+                        ListView.builder(
+                  itemCount: productsProvider.productItems.length,
+                  itemBuilder: (context, index) {
+                    return UserProductItem(
+                        productsProvider.productItems[index]);
+                  },
+                ),
+              ),
+            );
+          }
         },
-        child: ListView.builder(
-          itemCount: productItems.length,
-          itemBuilder: (context, index) {
-            return UserProductItem(productItems[index]);
-          },
-        ),
       ),
     );
   }
+
+  Future<void> refreshProducts(BuildContext context) async =>
+      await Provider.of<ProductsProvider>(context, listen: false)
+          .fetchAndSetProducts(filterByUser: true);
 }

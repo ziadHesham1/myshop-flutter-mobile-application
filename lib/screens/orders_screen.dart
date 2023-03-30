@@ -23,10 +23,12 @@ class OrdersScreen extends StatelessWidget {
         future: Provider.of<OrdersProvider>(context, listen: false)
             .fetchAndSetOrders(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          bool isWaiting = snapshot.connectionState == ConnectionState.waiting;
+          bool errorAccrued = snapshot.hasError;
+          if (isWaiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            print(
+          } else if (errorAccrued) {
+            debugPrint(
                 'Error in fetchAndSetOrders FutureBuilder says : ${snapshot.error}');
             return const ErrorAccruedScreen(errorMessage: 'error accrued');
           } else {
