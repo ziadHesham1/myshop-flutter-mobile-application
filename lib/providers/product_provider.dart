@@ -30,7 +30,7 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String theToken) async {
     // toggle locally
     var oldStatus = isFavorite;
     _setFavValue(!isFavorite);
@@ -39,11 +39,11 @@ class ProductProvider with ChangeNotifier {
     try {
       final response = await http.put(
           FirebaseDBHelper.userFavoritesUrl(
-              token: authToken, userId: userId, productId: id),
+              token: theToken, userId: userId, productId: id),
           body: json.encode(isFavorite));
       if (response.statusCode >= 400) {
         _setFavValue(oldStatus);
-        throw ('There\'s an error in the toggleFavoriteStatus Function');
+        throw ('There\'s an error in the toggleFavoriteStatus Function : ${response.reasonPhrase}');
       }
     } catch (error) {
       _setFavValue(oldStatus);

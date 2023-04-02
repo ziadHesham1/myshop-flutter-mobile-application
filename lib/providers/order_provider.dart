@@ -28,28 +28,7 @@ class OrdersProvider with ChangeNotifier {
   List<OrderModel> _orders = [];
 
   List<OrderModel> get orders => [..._orders];
-  static List<Map<String, dynamic>> dummyExtractedListInMap = [
-    {
-      'id': 'NOdZ4FjvhZrF71xgqAV',
-      'price': 29.99,
-      'quantity': 1,
-      'title': 'Red Shirt',
-    },
-    {
-      'id': 'NOdZ4Lu1Khg9xOQfuNl',
-      'price': 49.99,
-      'quantity': 2,
-      'title': ' A Pan',
-    }
-  ];
-
-  Map<String, Map<String, dynamic>> dummyExtractedMap = {
-    '-NOdZEcOiTWVFwxJu7uI': {
-      'amount': 82.98,
-      'dateTime': '2023-02-19T14:05:53.248052',
-      'cartProducts': dummyExtractedListInMap,
-    },
-  };
+ 
   Future<void> addOrder(List<CartItemModel> cartProducts, double total) async {
     try {
       var dateTime2 = DateTime.now();
@@ -80,7 +59,7 @@ class OrdersProvider with ChangeNotifier {
           ));
       notifyListeners();
     } catch (error) {
-      print(
+      debugPrint(
           'Error in addOrder function!!! : couldn\'t add the order \n error message : $error');
     }
   }
@@ -92,7 +71,7 @@ class OrdersProvider with ChangeNotifier {
           json.decode(response.body) as Map<String, dynamic>;
       List<OrderModel> loadedData = [];
       extractedData.forEach((key, value) {
-        print(
+        debugPrint(
             'Order with total amount ${value['amount']} is fetched from the database');
 
         loadedData.add(
@@ -113,7 +92,7 @@ class OrdersProvider with ChangeNotifier {
       });
       _orders = loadedData;
     } catch (error) {
-      print(
+      debugPrint(
           'error in fetchAndSetOrders function!! couldn\'t fetch the data \n error:$error');
 
       // rethrow;

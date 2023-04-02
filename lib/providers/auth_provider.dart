@@ -62,7 +62,7 @@ class AuthProvider with ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       rethrow;
     }
   }
@@ -83,7 +83,7 @@ class AuthProvider with ChangeNotifier {
       );
       notifyListeners();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       rethrow;
     }
   }

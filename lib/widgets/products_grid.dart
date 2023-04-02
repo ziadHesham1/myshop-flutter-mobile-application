@@ -15,7 +15,7 @@ class ProductGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('ProductGrid is called');
+    debugPrint('ProductGrid is called');
 
     final ProductsProvider productsProvider =
         Provider.of<ProductsProvider>(context);

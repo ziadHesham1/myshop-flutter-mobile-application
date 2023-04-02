@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myshop_flutter_application/models/custom_error_dialog.dart';
 import 'package:myshop_flutter_application/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 

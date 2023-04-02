@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<AuthProvider>(
         builder: (context, authProvider, _) {
-          print('myApp build is called');
+          debugPrint('myApp build is called');
 
           return MaterialApp(
             debugShowCheckedModeBanner: false,

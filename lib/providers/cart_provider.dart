@@ -24,7 +24,7 @@ class CartProvider with ChangeNotifier {
   String authToken = '';
   CartProvider.empty();
   CartProvider(this.authToken, this._cartItems) {
-    print('CartProvider is called');
+    debugPrint('CartProvider is called');
   }
 
   Map<String, CartItemModel> _cartItems = {};
@@ -34,7 +34,7 @@ class CartProvider with ChangeNotifier {
 *product id
   is the key in the map and the productId in the DB map
 *the cart item id 
-  is the cartmodel.id which is the cartitem value.id
+  is the cart model.id which is the cart item value.id
   and the id of the item in the DB which is automatically generated 
 
 putIfAbsent(
@@ -104,7 +104,8 @@ putIfAbsent(
         if (!extractedData.containsKey('error')) {
           Map<String, CartItemModel> loadedData = {};
           extractedData.forEach((key, value) {
-            print('Product : ${value['title']} is fetched from the database');
+            debugPrint(
+                'Product : ${value['title']} is fetched from the database');
             loadedData.putIfAbsent(
               value['productId'],
               () => CartItemModel(
@@ -125,7 +126,7 @@ putIfAbsent(
       } else {
         String hintMessage =
             'Hint from fetchAndSetCartItems Fn: the extractedData = null';
-        print(hintMessage);
+        debugPrint(hintMessage);
         // throw HttpException(errorMessage);
       }
     } catch (error) {
@@ -138,7 +139,7 @@ putIfAbsent(
 // remove the product interlay from cart
 // working local and on DB
   Future<void> removeItem(String id) async {
-    print('inside removeItem Fn');
+    debugPrint('inside removeItem Fn');
     try {
       CartItemModel? deletedItem = _cartItems.remove(id);
       notifyListeners();
@@ -146,10 +147,11 @@ putIfAbsent(
       if (deletedItem != null) {
         http.Response response = await http
             .delete(FirebaseDBHelper.cartItemUrl(deletedItem.id, authToken));
-        print('trying to delete product with id responseId from cart in DB');
+        debugPrint(
+            'trying to delete product with id responseId from cart in DB');
         // check if there's an error return the product back in cart
         if (response.statusCode >= 400) {
-          print(
+          debugPrint(
               'Error!! Can\'t delete product with id responseId from cart DB');
           _cartItems.putIfAbsent(id, () => deletedItem!);
           notifyListeners();
@@ -157,7 +159,7 @@ putIfAbsent(
         deletedItem = null;
       }
     } catch (error) {
-      print(
+      debugPrint(
           'error in the removeItem function in the cart provider class: ${error.toString()}');
       rethrow;
     }
@@ -186,13 +188,14 @@ putIfAbsent(
         http.patch(url, body: json.encode({'quantity': existingItem.quantity}));
         notifyListeners();
       } else {
-        print(
+        debugPrint(
             'in removeSingleItem Fn : product quantity couldn\'t be updated because there\'s no item with this product id : $productId ');
       }
     }
     // DB and local is WORKING
     else {
-      print('removeItem says :removeSingleItem is calling me');
+              debugPrint(
+'removeItem says :removeSingleItem is calling me');
       removeItem(productId);
       // _cartItems.remove(productId);
     }
@@ -209,7 +212,7 @@ putIfAbsent(
       if (response.statusCode >= 400) {
         _cartItems = existingCartItems;
         notifyListeners();
-        print('Error!! can\'t couldn\'t clear cart  ');
+        debugPrint('Error!! can\'t couldn\'t clear cart  ');
       }
     } catch (error) {
       rethrow;

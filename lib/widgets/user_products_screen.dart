@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/products_provider.dart';
 import '../screens/edit_product_screen.dart';
-import '../screens/error_accured_screen.dart';
+import '../screens/error_accrued_screen.dart';
 import '../screens/user_product_item.dart';
 import 'main_drawer.dart';
 
@@ -13,7 +13,7 @@ class UserProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('User Products Screen build called');
+    debugPrint('User Products Screen build called');
 
     return Scaffold(
       appBar: AppBar(

@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,7 @@ class ProductsProvider with ChangeNotifier {
   String userId = '';
   ProductsProvider.empty();
   ProductsProvider(this.userId, this.authToken, this._products) {
-    print('ProductsProvider is called');
+    debugPrint('ProductsProvider is called');
   }
 
   // ignore: prefer_final_fields
@@ -60,7 +59,7 @@ class ProductsProvider with ChangeNotifier {
       'description': description,
       'price': price,
       'imageUrl': imageUrl,
-      'authToken': authToken,
+      // 'authToken': authToken,
       // 'userId': userId,
       'creatorId': userId
     };
@@ -80,7 +79,7 @@ class ProductsProvider with ChangeNotifier {
       ));
       notifyListeners();
     } catch (error) {
-      print(error);
+      debugPrint(error.toString());
       rethrow;
     }
   }
@@ -132,7 +131,6 @@ class ProductsProvider with ChangeNotifier {
       final http.Response response = await http.get(filterByUser
           ? FirebaseDBHelper.productsUrl(authToken, creatorId: userId)
           : FirebaseDBHelper.productsUrl(authToken));
-
       final http.Response favoriteResponse = await http.get(
           FirebaseDBHelper.userFavoritesUrl(token: authToken, userId: userId));
 
@@ -154,7 +152,7 @@ class ProductsProvider with ChangeNotifier {
               imageUrl: value['imageUrl'],
               isFavorite:
                   favoritesData == null ? false : favoritesData[key] ?? false,
-              authToken: value['authToken'],
+              authToken: authToken /* value['authToken'] */,
               userId: userId,
             ));
           });
@@ -163,19 +161,19 @@ class ProductsProvider with ChangeNotifier {
         } else {
           var errorMessage =
               'Error in fetchAndSetProducts Fn: ${extractedData['error']}';
-          print(errorMessage);
+          debugPrint(errorMessage);
           throw (errorMessage);
         }
       } else {
         var errorMessage =
             'Error in fetchAndSetProducts Fn: the extractedData = null';
-        print(errorMessage);
+        debugPrint(errorMessage);
         // throw (errorMessage);
       }
     } catch (error) {
       var errorMessage =
           'Error caught in the fetchAndSetProducts function in the ProductsProvider ${error.toString()}';
-      print(errorMessage);
+      debugPrint(errorMessage);
       throw (errorMessage);
     }
   }
@@ -206,11 +204,11 @@ class ProductsProvider with ChangeNotifier {
         );
         notifyListeners();
       } catch (error) {
-        print('error in the updateProduct function $error');
+        debugPrint('error in the updateProduct function $error');
         rethrow;
       }
     } else {
-      print('update failed!! Product not found');
+      debugPrint('update failed!! Product not found');
     }
   }
 

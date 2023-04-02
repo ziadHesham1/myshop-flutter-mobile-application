@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myshop_flutter_application/screens/error_accured_screen.dart';
+import 'package:myshop_flutter_application/screens/error_accrued_screen.dart';
 import 'package:myshop_flutter_application/widgets/main_drawer.dart';
 import 'package:provider/provider.dart';
 

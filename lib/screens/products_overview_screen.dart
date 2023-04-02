@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myshop_flutter_application/providers/cart_provider.dart';
-import 'package:myshop_flutter_application/screens/error_accured_screen.dart';
+import 'package:myshop_flutter_application/screens/error_accrued_screen.dart';
 import 'package:myshop_flutter_application/widgets/badge.dart';
 import 'package:provider/provider.dart';
 import '../providers/products_provider.dart';
@@ -18,7 +18,6 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 bool errorAccrued = false;
 
-var _isInit = true;
 bool _isLoading = false;
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
@@ -27,7 +26,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var isCartFetched = false;
   @override
   Widget build(BuildContext context) {
-    print('ProductsOverviewScreen is called');
+    debugPrint('ProductsOverviewScreen is called');
 
     return Scaffold(
         appBar: AppBar(

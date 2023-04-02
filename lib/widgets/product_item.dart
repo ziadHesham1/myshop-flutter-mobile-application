@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myshop_flutter_application/providers/auth_provider.dart';
 import 'package:myshop_flutter_application/providers/cart_provider.dart';
 import 'package:myshop_flutter_application/providers/product_provider.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('ProductItem is called');
+    debugPrint('ProductItem is called');
     ctx = context;
     var providedProduct = Provider.of<ProductProvider>(context);
     var providedCartItems = Provider.of<CartProvider>(context);
@@ -60,7 +61,7 @@ class ProductItem extends StatelessWidget {
                   value.isFavorite
                       ? Icons.favorite
                       : Icons.favorite_border_outlined, () {
-                value.toggleFavoriteStatus();
+                value.toggleFavoriteStatus(Provider.of<AuthProvider>(context,listen: false).token??'');
 
                 // value.toggleFavoriteStatus(providedProduct.id);
                 buildSnackbar(
@@ -68,7 +69,7 @@ class ProductItem extends StatelessWidget {
                       ? '${providedProduct.title} added to the to favorites'
                       : '${providedProduct.title} removed from the favorites',
                   () {
-                    providedProduct.toggleFavoriteStatus();
+                    providedProduct.toggleFavoriteStatus(Provider.of<AuthProvider>(context,listen: false).token??'');
 
                     // providedProduct.toggleFavoriteStatus(providedProduct.id);
                   },
