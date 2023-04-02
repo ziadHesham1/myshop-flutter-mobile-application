@@ -22,41 +22,23 @@ class CartItemModel {
 
 class CartProvider with ChangeNotifier {
   String authToken = '';
+  String userId = '';
+
   CartProvider.empty();
-  CartProvider(this.authToken, this._cartItems) {
+  CartProvider(this._cartItems,
+      {required this.authToken, required this.userId}) {
     debugPrint('CartProvider is called');
   }
 
   Map<String, CartItemModel> _cartItems = {};
 
-/*
-*which id is which!!! : 
-*product id
-  is the key in the map and the productId in the DB map
-*the cart item id 
-  is the cart model.id which is the cart item value.id
-  and the id of the item in the DB which is automatically generated 
-
-putIfAbsent(
-            value['productId'],
-            () => CartItemModel(
-              id: key,
-              title: value['title'],
-              price: value['price'],
-              quantity: value['quantity'],
-            ),
-
-*/
-
   Map<String, CartItemModel> get cartItems => {..._cartItems};
 
   Future<void> addCartItem(String productId, String title, double price) async {
-    var existingItemId = '';
     var existingItemQuantity = 0;
     if (_cartItems.containsKey(productId)) {
       // change quantity locally
       _cartItems.update(productId, (item) {
-        existingItemId = item.id;
         existingItemQuantity = item.quantity;
 
         return CartItemModel(
@@ -67,14 +49,17 @@ putIfAbsent(
         );
       });
       // change quantity in DB
-      await http.patch(FirebaseDBHelper.cartItemUrl(existingItemId, authToken),
+      await http.patch(
+          FirebaseDBHelper.cartItemUrl(
+              cartItemId: productId, token: authToken, userId: userId),
           body: json.encode({
             'quantity': existingItemQuantity + 1,
           }));
     } else {
       //response
 
-      final response = await http.post(FirebaseDBHelper.cartItemsUrl(authToken),
+      final response = await http.post(
+          FirebaseDBHelper.cartItemsUrl(token: authToken, userId: userId),
           body: json.encode({
             'productId': productId,
             'title': title,
@@ -96,8 +81,8 @@ putIfAbsent(
 
   Future<void> fetchAndSetCartItems() async {
     try {
-      final http.Response response =
-          await http.get(FirebaseDBHelper.cartItemsUrl(authToken));
+      final http.Response response = await http
+          .get(FirebaseDBHelper.cartItemsUrl(token: authToken, userId: userId));
       final Map<String, dynamic>? extractedData =
           json.decode(response.body) as Map<String, dynamic>?;
       if (extractedData != null) {
@@ -145,8 +130,8 @@ putIfAbsent(
       notifyListeners();
       // remove that item from the DB
       if (deletedItem != null) {
-        http.Response response = await http
-            .delete(FirebaseDBHelper.cartItemUrl(deletedItem.id, authToken));
+        http.Response response = await http.delete(FirebaseDBHelper.cartItemUrl(
+            userId: userId, cartItemId: deletedItem.id, token: authToken));
         debugPrint(
             'trying to delete product with id responseId from cart in DB');
         // check if there's an error return the product back in cart
@@ -184,7 +169,8 @@ putIfAbsent(
       });
       var existingItem = _cartItems[productId];
       if (existingItem != null) {
-        var url = FirebaseDBHelper.cartItemUrl(existingItem.id, authToken);
+        var url = FirebaseDBHelper.cartItemUrl(
+            cartItemId: existingItem.id, token: authToken, userId: userId);
         http.patch(url, body: json.encode({'quantity': existingItem.quantity}));
         notifyListeners();
       } else {
@@ -194,8 +180,7 @@ putIfAbsent(
     }
     // DB and local is WORKING
     else {
-              debugPrint(
-'removeItem says :removeSingleItem is calling me');
+      debugPrint('removeItem says :removeSingleItem is calling me');
       removeItem(productId);
       // _cartItems.remove(productId);
     }
@@ -207,8 +192,8 @@ putIfAbsent(
       _cartItems = {};
       notifyListeners();
 
-      http.Response response =
-          await http.delete(FirebaseDBHelper.cartItemsUrl(authToken));
+      http.Response response = await http.delete(
+          FirebaseDBHelper.cartItemsUrl(token: authToken, userId: userId));
       if (response.statusCode >= 400) {
         _cartItems = existingCartItems;
         notifyListeners();

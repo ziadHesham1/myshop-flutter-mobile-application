@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../models/firebase_db_helper.dart';
@@ -11,7 +10,8 @@ class ProductsProvider with ChangeNotifier {
   String authToken = '';
   String userId = '';
   ProductsProvider.empty();
-  ProductsProvider(this.userId, this.authToken, this._products) {
+  ProductsProvider(this._products,
+      {required this.authToken, required this.userId}) {
     debugPrint('ProductsProvider is called');
   }
 

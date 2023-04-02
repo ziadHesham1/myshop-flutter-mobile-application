@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
           update: (BuildContext context, value,
                   ProductsProvider? previousProductsProvider) =>
               ProductsProvider(
-            value.userId ?? '',
-            value.token ?? '',
+            authToken: value.token ?? '',
+            userId: value.userId ?? '',
             previousProductsProvider == null
                 ? []
                 : previousProductsProvider.productItems,
@@ -41,7 +41,8 @@ class MyApp extends StatelessWidget {
           update: (BuildContext context, value,
                   CartProvider? previousCartProvider) =>
               CartProvider(
-            value.token ?? '',
+            authToken: value.token ?? '',
+            userId: value.userId ?? '',
             previousCartProvider == null ? {} : previousCartProvider.cartItems,
           ),
         ),
@@ -50,7 +51,8 @@ class MyApp extends StatelessWidget {
           update: (BuildContext context, value,
                   OrdersProvider? previousCartProvider) =>
               OrdersProvider(
-            value.token ?? '',
+            authToken: value.token ?? '',
+            userId: value.userId ?? '',
             previousCartProvider == null ? [] : previousCartProvider.orders,
           ),
         ),

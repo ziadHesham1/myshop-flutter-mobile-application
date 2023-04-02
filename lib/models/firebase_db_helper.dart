@@ -27,17 +27,15 @@ class FirebaseDBHelper {
     }
   }
 
-  // static Uri cartItemsUrl = Uri.parse('$url/cartItems.json');
-  static Uri cartItemsUrl(String token) =>
-      Uri.parse('$url/cartItems.json?auth=$token');
-  static Uri cartItemUrl(productId, String token) {
-    return Uri.parse('$url/cartItems/$productId.json?auth=$token');
-  }
+  static Uri cartItemsUrl({required String token, required String userId}) =>
+      Uri.parse('$url/cartItems/$userId.json?auth=$token');
 
-  // static Uri ordersUrl = Uri.parse('$url/orders.json');
-  static Uri ordersUrl(String token) =>
-      Uri.parse('$url/orders.json?auth=$token');
-  static Uri orderUrl(productId, String token) {
-    return Uri.parse('$url/orders/$productId.json?auth=$token');
-  }
+  static Uri cartItemUrl(
+          {required String cartItemId,
+          required String token,
+          required String userId}) =>
+      Uri.parse('$url/cartItems/$userId/$cartItemId.json?auth=$token');
+
+  static Uri ordersUrl(String token, String userId) =>
+      Uri.parse('$url/orders/$userId.json?auth=$token');
 }
