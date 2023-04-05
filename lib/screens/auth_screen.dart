@@ -14,7 +14,7 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
+    debugPrint('auth screen is called');
     return Scaffold(
       body: Stack(
         children: <Widget>[

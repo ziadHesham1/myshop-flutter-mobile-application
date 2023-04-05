@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myshop_flutter_application/providers/auth_provider.dart';
+import 'package:myshop_flutter_application/screens/loading_screen.dart';
 import '../screens/auth_screen.dart';
 import '../screens/edit_product_screen.dart';
 import '../providers/order_provider.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: Consumer<AuthProvider>(
-        builder: (context, authProvider, _) {
+        builder: (context, AuthProvider authProvider, _) {
           debugPrint('myApp build is called');
 
           return MaterialApp(
@@ -69,12 +70,8 @@ class MyApp extends StatelessWidget {
                     ColorScheme.fromSwatch(primarySwatch: Colors.purple)
                         .copyWith(secondary: Colors.deepOrange),
                 fontFamily: 'Lato'),
-            home: authProvider.isAuth
-                ? const ProductsOverviewScreen()
-                : const AuthScreen(),
+            home: _decideHomeScreen(authProvider),
             routes: {
-              // '/': (context) => const ProductsOverviewScreen(),
-              // '/': (context) => const AuthScreen(),
               OrdersScreen.routeName: (context) => const OrdersScreen(),
               ProductDetailsScreen.routeName: (context) =>
                   const ProductDetailsScreen(),
@@ -88,6 +85,26 @@ class MyApp extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  Widget _decideHomeScreen(AuthProvider authProvider) {
+   
+    return FutureBuilder(
+      future: authProvider.tryAutoLogin(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        bool isWaiting = snapshot.connectionState == ConnectionState.waiting;
+        bool canAutoLogin = snapshot.data ?? false;
+        if (isWaiting) {
+          return const LoadingScreen();
+        } else {
+          if (canAutoLogin) {
+            return const ProductsOverviewScreen();
+          } else {
+            return const AuthScreen();
+          }
+        }
+      },
     );
   }
 }
