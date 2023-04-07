@@ -17,20 +17,18 @@ class ProductDetailsScreen extends StatelessWidget {
       width: double.infinity,
       fit: BoxFit.cover,
     );
-    var imageWithoutInternet = Image.asset(
-      'no_internet.jpg',
-      width: double.infinity,
-      fit: BoxFit.cover,
-    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(selectedProduct.title),
       ),
       body: Column(
         children: [
-          ClipRRect(
-            child:
-                isInternetConnected ? imageUsingInternet : imageWithoutInternet,
+          Hero(
+            tag: selectedProduct.id,
+            child: ClipRRect(
+              child: imageUsingInternet,
+            ),
           ),
           // the title
           Text(

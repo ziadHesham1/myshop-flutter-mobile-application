@@ -23,17 +23,8 @@ class ProductItem extends StatelessWidget {
     ctx = context;
     var providedProduct = Provider.of<ProductProvider>(context);
     var providedCartItems = Provider.of<CartProvider>(context);
-    var imageUsingInternet = Image.network(
-      providedProduct.imageUrl,
-      width: double.infinity,
-      fit: BoxFit.cover,
-    );
+    // var imageUsingInternet = NetworkImage(providedProduct.imageUrl);
 
-    var imageWithoutInternet = Image.asset(
-      'no_internet.jpg',
-      width: double.infinity,
-      fit: BoxFit.cover,
-    );
     return InkWell(
       // go to the product detail screen when the widget pressed
       onTap: () => Navigator.of(context).pushNamed(
@@ -61,7 +52,9 @@ class ProductItem extends StatelessWidget {
                   value.isFavorite
                       ? Icons.favorite
                       : Icons.favorite_border_outlined, () {
-                value.toggleFavoriteStatus(Provider.of<AuthProvider>(context,listen: false).token??'');
+                value.toggleFavoriteStatus(
+                    Provider.of<AuthProvider>(context, listen: false).token ??
+                        '');
 
                 // value.toggleFavoriteStatus(providedProduct.id);
                 buildSnackbar(
@@ -69,7 +62,10 @@ class ProductItem extends StatelessWidget {
                       ? '${providedProduct.title} added to the to favorites'
                       : '${providedProduct.title} removed from the favorites',
                   () {
-                    providedProduct.toggleFavoriteStatus(Provider.of<AuthProvider>(context,listen: false).token??'');
+                    providedProduct.toggleFavoriteStatus(
+                        Provider.of<AuthProvider>(context, listen: false)
+                                .token ??
+                            '');
 
                     // providedProduct.toggleFavoriteStatus(providedProduct.id);
                   },
@@ -90,8 +86,15 @@ class ProductItem extends StatelessWidget {
             ),
           ),
           //  the main child of the GridTile : the product image
-          child:
-              isInternetConnected ? imageUsingInternet : imageWithoutInternet,
+          child: Hero(
+            tag: providedProduct.id,
+            child: FadeInImage(
+              image: NetworkImage(providedProduct.imageUrl),
+              placeholder:
+                  const AssetImage('assets/images/product-placeholder.png'),
+                  fit: BoxFit.cover,
+            ),
+          ),
         ),
       ),
     );
