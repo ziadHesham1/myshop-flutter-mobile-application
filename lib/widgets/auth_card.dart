@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:myshop_flutter_application/models/auth_animation.dart';
+import 'package:myshop_flutter_application/models/app_animation.dart';
 import '../providers/auth_provider.dart';
 import 'package:provider/provider.dart';
+
 enum AuthMode { signup, signin }
 
 class AuthCard extends StatefulWidget {
@@ -25,7 +26,7 @@ class _AuthCardState extends State<AuthCard>
   @override
   void initState() {
     super.initState();
-    AuthAnimation.initiateAnimation(this);
+    AppAnimation.initiateAnimation(this);
   }
 
   Future<void> errorDialog(context, Object error) {
@@ -83,10 +84,10 @@ class _AuthCardState extends State<AuthCard>
   void _switchAuthMode() {
     if (_authMode == AuthMode.signin) {
       setState(() => _authMode = AuthMode.signup);
-      AuthAnimation.animationController.forward();
+      AppAnimation.animationController.forward();
     } else {
       setState(() => _authMode = AuthMode.signin);
-      AuthAnimation.animationController.reverse();
+      AppAnimation.animationController.reverse();
     }
   }
 
@@ -101,12 +102,12 @@ class _AuthCardState extends State<AuthCard>
         ),
         elevation: 8.0,
         child: AnimatedBuilder(
-          animation: AuthAnimation.heightAnimation,
+          animation: AppAnimation.heightAnimation,
           builder: (BuildContext context, Widget? child) {
             return Container(
-              height: AuthAnimation.heightAnimation.value.height,
+              height: AppAnimation.heightAnimation.value.height,
               constraints: BoxConstraints(
-                  minHeight: AuthAnimation.heightAnimation.value.height),
+                  minHeight: AppAnimation.heightAnimation.value.height),
               width: deviceSize.width * 0.75,
               padding: const EdgeInsets.all(16.0),
               child: child,
@@ -137,9 +138,9 @@ class _AuthCardState extends State<AuthCard>
 
   Widget signupField() {
     return FadeTransition(
-      opacity: AuthAnimation.fadeAnimation,
+      opacity: AppAnimation.fadeAnimation,
       child: SlideTransition(
-        position: AuthAnimation.slideAnimation,
+        position: AppAnimation.slideAnimation,
         child: TextFormField(
           initialValue: 'zead1111',
           enabled: _authMode == AuthMode.signup,

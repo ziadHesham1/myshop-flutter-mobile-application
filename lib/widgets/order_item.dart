@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../models/app_animation.dart';
 import '../providers/order_provider.dart';
 
 class OrderItem extends StatefulWidget {
@@ -14,8 +13,14 @@ class OrderItem extends StatefulWidget {
   State<OrderItem> createState() => _OrderItemState();
 }
 
-class _OrderItemState extends State<OrderItem> {
+class _OrderItemState extends State<OrderItem> with TickerProviderStateMixin {
   var _expanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    AppAnimation.initiateAnimation(this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +41,9 @@ class _OrderItemState extends State<OrderItem> {
           if (_expanded)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-              height: min(widget.order.cartProducts.length * 20 + 75, 100),
+              // height: min(widget.order.cartProducts.length * 20 + 75, 100),
               child: ListView.builder(
+                shrinkWrap: true,
                 itemCount: widget.order.cartProducts.length,
                 itemBuilder: (context, index) {
                   var cartItem = widget.order.cartProducts[index];
@@ -45,11 +51,16 @@ class _OrderItemState extends State<OrderItem> {
                     title: Text(
                       cartItem.title,
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                     trailing: Text(
                       '${cartItem.quantity}x\$${cartItem.price}',
-                      style: const TextStyle(fontSize: 18, color: Colors.grey),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey,
+                      ),
                     ),
                   );
                 },

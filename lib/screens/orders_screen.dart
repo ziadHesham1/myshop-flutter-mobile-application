@@ -44,6 +44,7 @@ class OrdersScreen extends StatelessWidget {
   ListView body(OrdersProvider providedOrders) {
     return ListView.builder(
       itemCount: providedOrders.orders.length,
+      
       itemBuilder: (BuildContext context, int index) {
         var orders = providedOrders.orders;
         return OrderItem(orders[index]);

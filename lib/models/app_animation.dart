@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AuthAnimation {
+class AppAnimation {
   static late AnimationController animationController;
 
   static Animation<Size> heightAnimation = Tween<Size>(
@@ -22,7 +22,7 @@ class AuthAnimation {
     end: const Offset(0, 0),
   ).animate(CurvedAnimation(
       parent: animationController, curve: Curves.fastOutSlowIn));
-      
+
   static void initiateAnimation(TickerProvider vsync) {
     animationController = AnimationController(
       vsync: vsync,
